@@ -220,15 +220,12 @@
 
         reader.onload = async function(e) {
             rawFontData = new Uint8Array(e.target.result);
-            
-            // Write input font to Pyodide Virtual File System
             pyodide.FS.writeFile("input_font.ttf", rawFontData);
 
-            // Python script to read name table safely
             const pyCode = `
 from fontTools.ttLib import TTFont
 
-font = TTFont("input_font.ttf")
+font = TTFont("input_font.ttf", lazy=True)
 name_table = font.get('name')
 
 metadata = {}
@@ -259,7 +256,6 @@ metadata
 
                 document.getElementById('editorSection').style.display = 'block';
 
-                // Font Preview
                 const blob = new Blob([rawFontData], { type: 'font/ttf' });
                 const fontUrl = URL.createObjectURL(blob);
                 const fontFace = new FontFace('customFontPreview', `url(${fontUrl})`);
@@ -268,7 +264,7 @@ metadata
                 document.getElementById('fontPreviewText').style.fontFamily = 'customFontPreview';
 
             } catch (err) {
-                alert("Error parsing font: " + err);
+                alert("Error reading font: " + err);
             }
         };
 
@@ -299,17 +295,16 @@ metadata
         const pyCode = `
 from fontTools.ttLib import TTFont
 
-font = TTFont("input_font.ttf")
+font = TTFont("input_font.ttf", lazy=True)
 name_table = font.get('name')
 
 if name_table:
     for name_id, val in user_inputs.items():
-        if val is not None:
-            # Set Name Record for Windows (3, 1, 0x0409) and Mac (1, 0, 0)
+        if val is not None and str(val).strip() != "":
             name_table.setName(str(val), int(name_id), 3, 1, 0x0409)
             name_table.setName(str(val), int(name_id), 1, 0, 0)
 
-font.save("output_font.ttf")
+font.save("output_font.ttf", reorderTables=False)
 `;
 
         try {
