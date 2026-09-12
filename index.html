@@ -1,0 +1,431 @@
+
+<html lang="bn">
+<head>
+    <meta charset="UTF-8"></meta>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+    <title>Font Metadata Editor Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 5px;
+            margin: 0;
+            width: 100% !important;
+        }
+        .container {
+            width: 100% !important;
+            max-width: 100% !important;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+        }
+        h2 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .file-box {
+            border: 2px dashed #1a73e8;
+            padding: 18px 10px;
+            text-align: center;
+            border-radius: 8px;
+            background: #f8fafd;
+            cursor: pointer;
+            margin-bottom: 15px;
+            width: 100% !important;
+        }
+        .file-box input { display: none; }
+        .file-box label { 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: #1a73e8;
+            font-size: 0.9rem;
+            display: block;
+            word-break: break-word;
+        }
+        
+        .editor-section { display: none; width: 100% !important; }
+        
+        .form-group {
+            margin-bottom: 12px;
+            width: 100% !important;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            color: #444;
+        }
+        input[type="text"], textarea {
+            width: 100% !important;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        textarea { resize: vertical; height: 60px; }
+        
+        .preview-box {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            border-radius: 5px;
+            width: 100% !important;
+        }
+        #fontPreviewText {
+            font-size: 1.1rem;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        
+        .btn-download {
+            width: 100% !important;
+            padding: 12px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-download:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Font Metadata Editor Tool</h2>
+
+    <div class="file-box" onclick="document.getElementById('fontFile').click()">
+        <label for="fontFile">📁 Select Font File (.ttf, .otf)</label>
+        <input accept=".ttf,.otf" id="fontFile" onchange="processFont(event)" type="file" />
+    </div>
+
+    <div class="editor-section" id="editorSection">
+        <div class="form-group">
+            <label>Font Family Name | ফন্ট পরিবারের নাম</label>
+            <input id="fontFamily" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Font Subfamily / Style | ফন্ট সাবফ্যামিলি / স্টাইল</label>
+            <input id="fontSubfamily" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Unique Font Identifier | ফন্ট শনাক্তকারী</label>
+            <input id="uniqueID" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Full Font Name | সম্পূর্ণ ফন্টের নাম</label>
+            <input id="fullName" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Version String | সংস্করণ স্ট্রিং</label>
+            <input id="version" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>PostScript Name | পোস্টস্ক্রিপ্ট নাম</label>
+            <input id="postScriptName" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Manufacturer / Publisher | প্রস্তুতকারক / প্রকাশক</label>
+            <input id="manufacturer" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Designer / Author | ডিজাইনার / লেখক</label>
+            <input id="designer" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Copyright Notice | কপিরাইট বিজ্ঞপ্তি</label>
+            <input id="copyright" type="text" />
+        </div>
+
+        <div class="form-group">
+            <label>Font Description | ফন্টের বিবরণ</label>
+            <textarea id="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>License Description | লাইসেন্সের বিবরণ</label>
+            <textarea id="license"></textarea>
+        </div>
+
+        <div class="preview-box">
+            <label>Live Font Preview: | লাইভ ফন্ট প্রিভিউ:</label>
+            <div id="fontPreviewText">Abc 123 - আমাদের দেশ আমার বাংলাদেশ। ঞ্চ ঞ্ছ ঞ্জ জ্ঞ ক্ষ হ্ম</div>
+        </div>
+
+        <button class="btn-download" onclick="saveAndDownload()">Update Metadata &amp; Download Font</button>
+    </div>
+</div>
+
+<script>
+    let rawFontBuffer = null;
+    let originalFileName = "edited-font.ttf";
+
+    function processFont(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        originalFileName = file.name;
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                rawFontBuffer = e.target.result;
+                const metadata = extractFontMetadata(rawFontBuffer);
+
+                document.getElementById('copyright').value = metadata[0] || '';
+                document.getElementById('fontFamily').value = metadata[1] || '';
+                document.getElementById('fontSubfamily').value = metadata[2] || 'Regular';
+                document.getElementById('uniqueID').value = metadata[3] || '';
+                document.getElementById('fullName').value = metadata[4] || '';
+                document.getElementById('version').value = metadata[5] || 'Version 1.00';
+                document.getElementById('postScriptName').value = metadata[6] || '';
+                document.getElementById('manufacturer').value = metadata[8] || '';
+                document.getElementById('designer').value = metadata[9] || '';
+                document.getElementById('description').value = metadata[10] || '';
+                document.getElementById('license').value = metadata[13] || '';
+
+                document.getElementById('editorSection').style.display = 'block';
+
+                const fontFace = new FontFace('customFontPreview', rawFontBuffer.slice(0));
+                fontFace.load().then(function(loaded) {
+                    document.fonts.add(loaded);
+                    document.getElementById('fontPreviewText').style.fontFamily = 'customFontPreview';
+                }).catch(function() {});
+
+            } catch (err) {
+                alert("Please select a valid TTF/OTF font file.");
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
+
+    function extractFontMetadata(buffer) {
+        const view = new DataView(buffer);
+        const numTables = view.getUint16(4);
+        let nameOffset = 0;
+
+        for (let i = 0; i < numTables; i++) {
+            const tag = String.fromCharCode(view.getUint8(12 + i*16), view.getUint8(13 + i*16), view.getUint8(14 + i*16), view.getUint8(15 + i*16));
+            if (tag === 'name') {
+                nameOffset = view.getUint32(20 + i*16);
+                break;
+            }
+        }
+
+        const data = {};
+        if (!nameOffset) return data;
+
+        const count = view.getUint16(nameOffset + 2);
+        const stringOffset = nameOffset + view.getUint16(nameOffset + 4);
+
+        for (let i = 0; i < count; i++) {
+            const rec = nameOffset + 6 + i * 12;
+            const platformID = view.getUint16(rec);
+            const nameID = view.getUint16(rec + 6);
+            const length = view.getUint16(rec + 8);
+            const offset = view.getUint16(rec + 10);
+
+            let str = "";
+            const bytes = new Uint8Array(buffer, stringOffset + offset, length);
+
+            if (platformID === 3 || platformID === 0) {
+                for (let j = 0; j < length; j += 2) {
+                    str += String.fromCharCode((bytes[j] << 8) | bytes[j + 1]);
+                }
+            } else {
+                for (let j = 0; j < length; j++) {
+                    str += String.fromCharCode(bytes[j]);
+                }
+            }
+
+            if (!data[nameID] || platformID === 3) {
+                data[nameID] = str;
+            }
+        }
+        return data;
+    }
+
+    function saveAndDownload() {
+        if (!rawFontBuffer) return;
+
+        const inputs = {
+            0: document.getElementById('copyright').value,
+            1: document.getElementById('fontFamily').value,
+            2: document.getElementById('fontSubfamily').value,
+            3: document.getElementById('uniqueID').value,
+            4: document.getElementById('fullName').value,
+            5: document.getElementById('version').value,
+            6: document.getElementById('postScriptName').value,
+            8: document.getElementById('manufacturer').value,
+            9: document.getElementById('designer').value,
+            10: document.getElementById('description').value,
+            13: document.getElementById('license').value
+        };
+
+        const updatedFont = patchMultiPlatformMetadata(rawFontBuffer, inputs);
+        const blob = new Blob([updatedFont], { type: 'font/ttf' });
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = originalFileName || 'edited-font.ttf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function calcTableChecksum(buffer, offset, length) {
+        const view = new DataView(buffer, offset);
+        let sum = 0;
+        const nLongs = Math.floor((length + 3) / 4);
+        for (let i = 0; i < nLongs; i++) {
+            sum = (sum + view.getUint32(i * 4)) >>> 0;
+        }
+        return sum;
+    }
+
+    function patchMultiPlatformMetadata(buffer, inputs) {
+        let stringBytes = [];
+        let nameRecords = [];
+        let currOffset = 0;
+
+        Object.keys(inputs).forEach(id => {
+            const val = inputs[id];
+            if (!val) return;
+
+            // 1. Macintosh Record (Platform 1 - ASCII)
+            let macBytes = [];
+            for (let i = 0; i < val.length; i++) {
+                macBytes.push(val.charCodeAt(i) & 0xFF);
+            }
+            nameRecords.push({
+                platformID: 1,
+                encodingID: 0,
+                languageID: 0,
+                nameID: parseInt(id),
+                length: macBytes.length,
+                offset: currOffset
+            });
+            stringBytes = stringBytes.concat(macBytes);
+            currOffset += macBytes.length;
+
+            // 2. Windows Record (Platform 3 - UTF-16BE)
+            let winBytes = [];
+            for (let i = 0; i < val.length; i++) {
+                const code = val.charCodeAt(i);
+                winBytes.push((code >> 8) & 0xFF);
+                winBytes.push(code & 0xFF);
+            }
+            nameRecords.push({
+                platformID: 3,
+                encodingID: 1,
+                languageID: 0x0409,
+                nameID: parseInt(id),
+                length: winBytes.length,
+                offset: currOffset
+            });
+            stringBytes = stringBytes.concat(winBytes);
+            currOffset += winBytes.length;
+        });
+
+        const unpaddedSize = 6 + (nameRecords.length * 12) + stringBytes.length;
+        const newNameSize = (unpaddedSize + 3) & ~3;
+        const newNameBuf = new ArrayBuffer(newNameSize);
+        const nView = new DataView(newNameBuf);
+
+        nView.setUint16(0, 0);
+        nView.setUint16(2, nameRecords.length);
+        nView.setUint16(4, 6 + (nameRecords.length * 12));
+
+        nameRecords.forEach((r, idx) => {
+            const pos = 6 + idx * 12;
+            nView.setUint16(pos, r.platformID);
+            nView.setUint16(pos + 2, r.encodingID);
+            nView.setUint16(pos + 4, r.languageID);
+            nView.setUint16(pos + 6, r.nameID);
+            nView.setUint16(pos + 8, r.length);
+            nView.setUint16(pos + 10, r.offset);
+        });
+
+        const strArr = new Uint8Array(newNameBuf, 6 + (nameRecords.length * 12));
+        strArr.set(new Uint8Array(stringBytes));
+
+        const srcView = new DataView(buffer);
+        const numTables = srcView.getUint16(4);
+        let nameTableIdx = -1;
+
+        const tableEntries = [];
+        for (let i = 0; i < numTables; i++) {
+            const tag = String.fromCharCode(srcView.getUint8(12 + i*16), srcView.getUint8(13 + i*16), srcView.getUint8(14 + i*16), srcView.getUint8(15 + i*16));
+            const checksum = srcView.getUint32(16 + i*16);
+            const offset = srcView.getUint32(20 + i*16);
+            const length = srcView.getUint32(24 + i*16);
+
+            if (tag === 'name') nameTableIdx = i;
+
+            tableEntries.push({ tag, checksum, offset, length, idx: i });
+        }
+
+        if (nameTableIdx === -1) return buffer;
+
+        const origOffset = tableEntries[nameTableIdx].offset;
+        const origLen = tableEntries[nameTableIdx].length;
+        const origPaddedLen = (origLen + 3) & ~3;
+        const delta = newNameSize - origPaddedLen;
+
+        const part1 = buffer.slice(0, origOffset);
+        const part2 = buffer.slice(origOffset + origLen);
+
+        const finalBuffer = new Uint8Array(part1.byteLength + newNameSize + part2.byteLength);
+        finalBuffer.set(new Uint8Array(part1), 0);
+        finalBuffer.set(new Uint8Array(newNameBuf), part1.byteLength);
+        finalBuffer.set(new Uint8Array(part2), part1.byteLength + newNameSize);
+
+        const fView = new DataView(finalBuffer.buffer);
+
+        for (let i = 0; i < numTables; i++) {
+            const entryHeaderPos = 12 + i * 16;
+            let currentOffset = srcView.getUint32(entryHeaderPos + 8);
+
+            if (i === nameTableIdx) {
+                fView.setUint32(entryHeaderPos + 12, newNameSize);
+                const checksum = calcTableChecksum(finalBuffer.buffer, currentOffset, newNameSize);
+                fView.setUint32(entryHeaderPos + 4, checksum);
+            } else if (currentOffset > origOffset) {
+                fView.setUint32(entryHeaderPos + 8, currentOffset + delta);
+            }
+        }
+
+        return finalBuffer.buffer;
+    }
+</script>
+
+</body>
+</html>
