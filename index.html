@@ -10,33 +10,34 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Font Metadata Editor</title>
+    <title>বাংলা Font Metadata Editor</title>
 
-    <!-- OpenType.js
-         শুধুমাত্র Font Metadata পড়ার জন্য ব্যবহার করা হচ্ছে -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.1/dist/opentype.min.js">
-    </script>
+
+    <!--
+        OpenType.js
+        শুধু Font read + preview এর জন্য।
+        Downloaded font rebuild করার জন্য ব্যবহার করা হবে না।
+    -->
+
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.1/dist/opentype.min.js"></script>
 
 
     <style>
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
 
         body {
 
-            min-height: 100vh;
+            margin: 0;
+
+            padding: 20px;
 
             background: #f4f6f9;
 
             color: #333;
-
-            padding: 20px;
 
             font-family:
                 -apple-system,
@@ -57,57 +58,57 @@
 
             margin: 0 auto;
 
-            background: #ffffff;
+            background: #fff;
 
-            padding: 25px;
+            border-radius: 10px;
 
-            border-radius: 12px;
+            padding: 22px;
 
             box-shadow:
-                0 4px 20px
+                0 3px 15px
                 rgba(0, 0, 0, 0.08);
 
         }
 
 
-        /* ==========================================
+        /* ===============================
            HEADER
-        ========================================== */
+        =============================== */
 
         .header {
 
             text-align: center;
 
-            margin-bottom: 25px;
+            margin-bottom: 20px;
 
         }
 
 
         .header h1 {
 
+            margin: 0 0 7px;
+
             color: #1a73e8;
 
-            font-size: 28px;
-
-            margin-bottom: 8px;
+            font-size: 26px;
 
         }
 
 
         .header p {
 
+            margin: 0;
+
             color: #777;
 
             font-size: 14px;
 
-            line-height: 1.5;
-
         }
 
 
-        /* ==========================================
-           UPLOAD BOX
-        ========================================== */
+        /* ===============================
+           FILE UPLOAD
+        =============================== */
 
         .file-box {
 
@@ -115,17 +116,17 @@
                 2px dashed
                 #1a73e8;
 
-            padding: 30px 20px;
+            border-radius: 8px;
+
+            padding: 25px 15px;
 
             text-align: center;
-
-            border-radius: 10px;
 
             background: #f8fafd;
 
             cursor: pointer;
 
-            transition: all .2s ease;
+            transition: .2s;
 
         }
 
@@ -133,8 +134,6 @@
         .file-box:hover {
 
             background: #eef5ff;
-
-            border-color: #0b57d0;
 
         }
 
@@ -150,9 +149,9 @@
 
         .file-icon {
 
-            font-size: 42px;
+            font-size: 40px;
 
-            margin-bottom: 10px;
+            margin-bottom: 8px;
 
         }
 
@@ -161,13 +160,13 @@
 
             display: block;
 
-            color: #1a73e8;
+            cursor: pointer;
 
-            font-size: 17px;
+            color: #1a73e8;
 
             font-weight: 700;
 
-            cursor: pointer;
+            font-size: 16px;
 
         }
 
@@ -176,11 +175,9 @@
 
             display: block;
 
+            margin-top: 7px;
+
             color: #777;
-
-            margin-top: 8px;
-
-            font-size: 13px;
 
         }
 
@@ -192,17 +189,17 @@
         }
 
 
-        /* ==========================================
+        /* ===============================
            FILE INFO
-        ========================================== */
+        =============================== */
 
         .file-info {
 
             display: none;
 
-            margin-top: 15px;
+            margin-top: 12px;
 
-            padding: 13px 15px;
+            padding: 12px 14px;
 
             background: #f5f7fa;
 
@@ -210,50 +207,50 @@
                 1px solid
                 #e0e4e8;
 
-            border-radius: 7px;
+            border-radius: 6px;
 
-            font-size: 14px;
+            font-size: 13px;
 
-            line-height: 1.6;
+            line-height: 1.7;
 
         }
 
 
-        /* ==========================================
+        /* ===============================
            EDITOR
-        ========================================== */
+        =============================== */
 
         .editor-section {
 
             display: none;
 
-            margin-top: 25px;
+            margin-top: 22px;
 
         }
 
 
         .section-title {
 
-            font-size: 19px;
+            margin-bottom: 16px;
+
+            padding-bottom: 8px;
+
+            border-bottom:
+                2px solid
+                #eee;
+
+            font-size: 18px;
 
             font-weight: 700;
 
             color: #222;
-
-            padding-bottom: 10px;
-
-            margin-bottom: 18px;
-
-            border-bottom:
-                2px solid
-                #eeeeee;
 
         }
 
 
         .form-group {
 
-            margin-bottom: 15px;
+            margin-bottom: 13px;
 
         }
 
@@ -262,11 +259,11 @@
 
             display: block;
 
-            font-size: 14px;
+            margin-bottom: 5px;
+
+            font-size: 13px;
 
             font-weight: 600;
-
-            margin-bottom: 6px;
 
             color: #444;
 
@@ -274,45 +271,40 @@
 
 
         input[type="text"],
-        textarea,
-        select {
+        textarea {
 
             width: 100%;
+
+            padding:
+                10px 11px;
 
             border:
                 1px solid
                 #ccc;
 
-            border-radius: 6px;
+            border-radius: 5px;
 
             outline: none;
 
             background: #fff;
 
-            font-size: 14px;
+            color: #222;
 
-            transition: .2s ease;
+            font-size: 14px;
 
         }
 
 
-        input[type="text"],
-        select {
+        input[type="text"] {
 
-            height: 42px;
-
-            padding:
-                0 12px;
+            height: 40px;
 
         }
 
 
         textarea {
 
-            min-height: 85px;
-
-            padding:
-                10px 12px;
+            min-height: 65px;
 
             resize: vertical;
 
@@ -322,8 +314,7 @@
 
 
         input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
+        textarea:focus {
 
             border-color:
                 #1a73e8;
@@ -340,15 +331,42 @@
         }
 
 
-        /* ==========================================
+        /* ===============================
+           BANGLA NOTICE
+        =============================== */
+
+        .bangla-notice {
+
+            margin-bottom: 18px;
+
+            padding: 11px 13px;
+
+            background: #fff8e1;
+
+            border:
+                1px solid
+                #ffe082;
+
+            border-radius: 6px;
+
+            color: #765b00;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* ===============================
            PREVIEW
-        ========================================== */
+        =============================== */
 
         .preview-box {
 
-            margin-top: 25px;
+            margin-top: 20px;
 
-            padding: 18px;
+            padding: 15px;
 
             background: #fafafa;
 
@@ -356,12 +374,14 @@
                 1px solid
                 #e0e0e0;
 
-            border-radius: 8px;
+            border-radius: 7px;
 
         }
 
 
         .preview-title {
+
+            font-size: 14px;
 
             font-weight: 700;
 
@@ -374,9 +394,9 @@
 
             display: flex;
 
-            gap: 10px;
+            gap: 8px;
 
-            margin-bottom: 12px;
+            margin-bottom: 10px;
 
         }
 
@@ -390,28 +410,38 @@
 
         .preview-controls select {
 
-            width: 100px;
+            width: 90px;
+
+            border:
+                1px solid
+                #ccc;
+
+            border-radius: 5px;
+
+            padding: 8px;
+
+            background: #fff;
 
         }
 
 
         #fontPreviewText {
 
-            min-height: 110px;
+            min-height: 100px;
 
-            padding: 18px;
+            padding: 15px;
 
-            background: #ffffff;
+            background: #fff;
 
             border:
                 1px solid
                 #ddd;
 
-            border-radius: 6px;
+            border-radius: 5px;
 
             font-size: 28px;
 
-            line-height: 1.6;
+            line-height: 1.7;
 
             word-break: break-word;
 
@@ -420,17 +450,17 @@
         }
 
 
-        /* ==========================================
+        /* ===============================
            BUTTONS
-        ========================================== */
+        =============================== */
 
-        .button-group {
+        .button-row {
 
             display: flex;
 
             gap: 10px;
 
-            margin-top: 20px;
+            margin-top: 18px;
 
         }
 
@@ -439,18 +469,16 @@
 
             border: none;
 
-            border-radius: 6px;
+            border-radius: 5px;
 
             padding:
-                13px 18px;
+                12px 16px;
 
             font-size: 14px;
 
             font-weight: 700;
 
             cursor: pointer;
-
-            transition: .2s ease;
 
         }
 
@@ -464,7 +492,7 @@
         }
 
 
-        .btn-reset {
+        .reset-btn {
 
             background: #6c757d;
 
@@ -473,14 +501,14 @@
         }
 
 
-        .btn-reset:hover {
+        .reset-btn:hover {
 
             background: #5a6268;
 
         }
 
 
-        .btn-download {
+        .download-btn {
 
             flex: 1;
 
@@ -491,16 +519,16 @@
         }
 
 
-        .btn-download:hover {
+        .download-btn:hover {
 
             background: #218838;
 
         }
 
 
-        /* ==========================================
+        /* ===============================
            STATUS
-        ========================================== */
+        =============================== */
 
         .status {
 
@@ -509,43 +537,13 @@
             margin-top: 15px;
 
             padding:
-                12px 15px;
+                11px 13px;
 
-            border-radius: 6px;
+            border-radius: 5px;
 
-            font-size: 14px;
+            font-size: 13px;
 
             line-height: 1.5;
-
-        }
-
-
-        .status.success {
-
-            display: block;
-
-            color: #176b2c;
-
-            background: #eaf7ee;
-
-            border:
-                1px solid
-                #b8e6c4;
-
-        }
-
-
-        .status.error {
-
-            display: block;
-
-            color: #b4232f;
-
-            background: #fdecec;
-
-            border:
-                1px solid
-                #f3b8be;
 
         }
 
@@ -554,24 +552,54 @@
 
             display: block;
 
-            color: #1558a6;
-
             background: #eef5ff;
 
             border:
                 1px solid
-                #b9d4f5;
+                #bdd5f5;
+
+            color: #1558a6;
 
         }
 
 
-        /* ==========================================
+        .status.success {
+
+            display: block;
+
+            background: #eaf7ee;
+
+            border:
+                1px solid
+                #b9e4c5;
+
+            color: #176b2c;
+
+        }
+
+
+        .status.error {
+
+            display: block;
+
+            background: #fdecec;
+
+            border:
+                1px solid
+                #f2b9be;
+
+            color: #b4232f;
+
+        }
+
+
+        /* ===============================
            FOOTER
-        ========================================== */
+        =============================== */
 
         .footer {
 
-            margin-top: 25px;
+            margin-top: 20px;
 
             text-align: center;
 
@@ -582,9 +610,9 @@
         }
 
 
-        /* ==========================================
+        /* ===============================
            RESPONSIVE
-        ========================================== */
+        =============================== */
 
         @media (max-width: 600px) {
 
@@ -597,14 +625,14 @@
 
             .container {
 
-                padding: 18px;
+                padding: 16px;
 
             }
 
 
             .header h1 {
 
-                font-size: 23px;
+                font-size: 22px;
 
             }
 
@@ -623,15 +651,15 @@
             }
 
 
-            .button-group {
+            .button-row {
 
                 flex-direction: column;
 
             }
 
 
-            .btn-reset,
-            .btn-download {
+            .reset-btn,
+            .download-btn {
 
                 width: 100%;
 
@@ -664,19 +692,18 @@
     <div class="header">
 
         <h1>
-            Font Metadata Editor
+            বাংলা Font Metadata Editor
         </h1>
 
         <p>
-            TTF / OTF Font Metadata Edit করুন
-            এবং Updated Font Download করুন
+            TTF / OTF Font Metadata Edit & Download
         </p>
 
     </div>
 
 
     <!-- ==========================================
-         UPLOAD
+         FILE UPLOAD
     ========================================== -->
 
     <div
@@ -688,23 +715,24 @@
             📁
         </div>
 
+
         <label for="fontFile">
 
-            Select Font File
+            বাংলা Font File Select করুন
 
         </label>
 
+
         <small>
 
-            .TTF এবং .OTF Font File
-            Select অথবা Drag & Drop করুন
+            TTF অথবা OTF • Click অথবা Drag & Drop
 
         </small>
 
 
         <input
-            type="file"
             id="fontFile"
+            type="file"
             accept=".ttf,.otf"
         >
 
@@ -712,7 +740,7 @@
 
 
     <!-- ==========================================
-         FILE INFORMATION
+         FILE INFO
     ========================================== -->
 
     <div
@@ -720,28 +748,22 @@
         id="fileInfo"
     >
 
-        <div>
+        <strong>
+            File:
+        </strong>
 
-            <strong>
-                File:
-            </strong>
+        <span id="fileName">
+        </span>
 
-            <span id="fileName">
-            </span>
-
-        </div>
+        <br>
 
 
-        <div>
+        <strong>
+            Size:
+        </strong>
 
-            <strong>
-                Size:
-            </strong>
-
-            <span id="fileSize">
-            </span>
-
-        </div>
+        <span id="fileSize">
+        </span>
 
     </div>
 
@@ -763,6 +785,16 @@
         </div>
 
 
+        <div class="bangla-notice">
+
+            বাংলা Font-এর glyph, Unicode mapping,
+            GSUB, GPOS এবং অন্যান্য মূল Font table
+            অপরিবর্তিত থাকবে। এখানে শুধুমাত্র metadata
+            update করা হবে।
+
+        </div>
+
+
         <!-- Font Family -->
 
         <div class="form-group">
@@ -774,10 +806,11 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="fontFamily"
-                placeholder="Example: My Bengali Font"
+                type="text"
+                placeholder="যেমন: SolaimanLipi"
             >
 
         </div>
@@ -794,10 +827,53 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="fontSubfamily"
-                placeholder="Example: Regular"
+                type="text"
+                placeholder="Regular / Bold / Italic"
+            >
+
+        </div>
+
+
+        <!-- Typographic Family -->
+
+        <div class="form-group">
+
+            <label for="typographicFamily">
+
+                Typographic Family |
+                টাইপোগ্রাফিক ফ্যামিলি
+
+            </label>
+
+
+            <input
+                id="typographicFamily"
+                type="text"
+                placeholder="Optional"
+            >
+
+        </div>
+
+
+        <!-- Typographic Subfamily -->
+
+        <div class="form-group">
+
+            <label for="typographicSubfamily">
+
+                Typographic Subfamily |
+                টাইপোগ্রাফিক সাবফ্যামিলি
+
+            </label>
+
+
+            <input
+                id="typographicSubfamily"
+                type="text"
+                placeholder="Optional"
             >
 
         </div>
@@ -814,9 +890,10 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="uniqueID"
+                type="text"
             >
 
         </div>
@@ -833,9 +910,10 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="fullName"
+                type="text"
             >
 
         </div>
@@ -852,9 +930,11 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="version"
+                type="text"
+                placeholder="Version 1.00"
             >
 
         </div>
@@ -871,9 +951,10 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="postScriptName"
+                type="text"
             >
 
         </div>
@@ -890,9 +971,10 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="manufacturer"
+                type="text"
             >
 
         </div>
@@ -909,9 +991,10 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="designer"
+                type="text"
             >
 
         </div>
@@ -928,9 +1011,10 @@
 
             </label>
 
+
             <input
-                type="text"
                 id="copyright"
+                type="text"
             >
 
         </div>
@@ -943,9 +1027,10 @@
             <label for="license">
 
                 License Description |
-                লাইসেন্সের বিবরণ
+                লাইসেন্স
 
             </label>
+
 
             <textarea
                 id="license"
@@ -956,7 +1041,7 @@
 
 
         <!-- ==========================================
-             LIVE PREVIEW
+             PREVIEW
         ========================================== -->
 
         <div class="preview-box">
@@ -964,7 +1049,7 @@
             <div class="preview-title">
 
                 Live Font Preview |
-                ফন্ট প্রিভিউ
+                বাংলা ফন্ট প্রিভিউ
 
             </div>
 
@@ -972,9 +1057,9 @@
             <div class="preview-controls">
 
                 <input
-                    type="text"
                     id="previewInput"
-                    value="Abc 123 - আমাদের দেশ আমার বাংলাদেশ। ঞ্চ ঞ্ছ ঞ্জ জ্ঞ ক্ষ হ্ম"
+                    type="text"
+                    value="আমাদের দেশ আমার বাংলাদেশ। বাংলা ফন্ট পরীক্ষা ১২৩ ABC xyz"
                 >
 
 
@@ -1016,9 +1101,8 @@
 
             <div id="fontPreviewText">
 
-                Abc 123 -
                 আমাদের দেশ আমার বাংলাদেশ।
-                ঞ্চ ঞ্ছ ঞ্জ জ্ঞ ক্ষ হ্ম
+                বাংলা ফন্ট পরীক্ষা ১২৩ ABC xyz
 
             </div>
 
@@ -1029,12 +1113,12 @@
              BUTTONS
         ========================================== -->
 
-        <div class="button-group">
+        <div class="button-row">
 
 
             <button
                 type="button"
-                class="btn-reset"
+                class="reset-btn"
                 id="resetButton"
             >
 
@@ -1045,7 +1129,7 @@
 
             <button
                 type="button"
-                class="btn-download"
+                class="download-btn"
                 id="downloadButton"
             >
 
@@ -1053,19 +1137,15 @@
 
             </button>
 
-
         </div>
 
 
-        <!-- ==========================================
-             STATUS
-        ========================================== -->
+        <!-- STATUS -->
 
         <div
             class="status"
             id="statusMessage"
-        >
-        </div>
+        ></div>
 
 
     </div>
@@ -1073,7 +1153,7 @@
 
     <div class="footer">
 
-        Font Metadata Editor
+        বাংলা Font Metadata Editor
         • Runs locally in your browser
 
     </div>
@@ -1091,7 +1171,7 @@
 
 let originalFontBuffer = null;
 
-let originalFileName = "font.ttf";
+let originalFileName = "";
 
 let originalMetadata = {};
 
@@ -1099,7 +1179,7 @@ let loadedFont = null;
 
 
 /* ============================================================
-   DOM ELEMENTS
+   DOM
 ============================================================ */
 
 const fontFile =
@@ -1139,7 +1219,7 @@ const downloadButton =
 
 
 /* ============================================================
-   BASIC HELPERS
+   BASIC FUNCTIONS
 ============================================================ */
 
 function getValue(id) {
@@ -1173,7 +1253,7 @@ function setValue(id, value) {
 
 function showStatus(
     message,
-    type = "info"
+    type
 ) {
 
     statusMessage.className =
@@ -1189,10 +1269,7 @@ function formatFileSize(bytes) {
 
     if (bytes < 1024) {
 
-        return (
-            bytes +
-            " Bytes"
-        );
+        return bytes + " Bytes";
 
     }
 
@@ -1208,8 +1285,7 @@ function formatFileSize(bytes) {
 
 
     return (
-        (bytes / (1024 * 1024))
-            .toFixed(2) +
+        (bytes / (1024 * 1024)).toFixed(2) +
         " MB"
     );
 
@@ -1217,35 +1293,94 @@ function formatFileSize(bytes) {
 
 
 /* ============================================================
-   LOCALIZED FONT NAME
+   LOCALIZED NAME READER
 ============================================================ */
 
 function getLocalizedName(obj) {
 
     if (!obj) {
+
         return "";
+
     }
 
 
     if (typeof obj === "string") {
+
         return obj;
+
     }
 
 
-    if (obj.en) {
-        return obj.en;
+    /*
+     * Prefer Bangla if available.
+     *
+     * opentype.js language keys can vary,
+     * so search common Bangla keys first.
+     */
+
+    const banglaKeys = [
+
+        "bn",
+
+        "bangla",
+
+        "bn-BD",
+
+        "bn-IN"
+
+    ];
+
+
+    for (
+        const key of banglaKeys
+    ) {
+
+        if (
+            obj[key] !== undefined &&
+            obj[key] !== null &&
+            obj[key] !== ""
+        ) {
+
+            return String(
+                obj[key]
+            );
+
+        }
+
     }
 
 
-    const keys =
-        Object.keys(obj);
+    /*
+     * Then English
+     */
+
+    if (
+        obj.en !== undefined
+    ) {
+
+        return String(
+            obj.en
+        );
+
+    }
 
 
-    if (keys.length > 0) {
+    /*
+     * Finally first available
+     */
 
-        return obj[
-            keys[0]
-        ];
+    const values =
+        Object.values(obj);
+
+
+    if (
+        values.length
+    ) {
+
+        return String(
+            values[0]
+        );
 
     }
 
@@ -1256,27 +1391,57 @@ function getLocalizedName(obj) {
 
 
 /* ============================================================
-   LOAD FONT
+   GET OPENTYPE NAME
 ============================================================ */
 
-function processFont(file) {
+function getName(
+    names,
+    property
+) {
 
-    if (!file) {
-        return;
+    if (
+        !names ||
+        !names[property]
+    ) {
+
+        return "";
+
     }
 
 
-    const lowerName =
+    return getLocalizedName(
+        names[property]
+    );
+
+}
+
+
+/* ============================================================
+   PROCESS FONT
+============================================================ */
+
+function processFont(
+    file
+) {
+
+    if (!file) {
+
+        return;
+
+    }
+
+
+    const fileName =
         file.name.toLowerCase();
 
 
     if (
-        !lowerName.endsWith(".ttf") &&
-        !lowerName.endsWith(".otf")
+        !fileName.endsWith(".ttf") &&
+        !fileName.endsWith(".otf")
     ) {
 
         showStatus(
-            "শুধুমাত্র TTF অথবা OTF Font File ব্যবহার করুন।",
+            "❌ শুধুমাত্র TTF অথবা OTF Font File ব্যবহার করুন।",
             "error"
         );
 
@@ -1287,10 +1452,6 @@ function processFont(file) {
 
     originalFileName =
         file.name;
-
-
-    fileInfo.style.display =
-        "block";
 
 
     document.getElementById(
@@ -1307,8 +1468,12 @@ function processFont(file) {
         );
 
 
+    fileInfo.style.display =
+        "block";
+
+
     showStatus(
-        "Font file read করা হচ্ছে...",
+        "Font read করা হচ্ছে...",
         "info"
     );
 
@@ -1323,7 +1488,10 @@ function processFont(file) {
             try {
 
                 /*
-                 * Original binary preserve করা হচ্ছে।
+                 * Original binary buffer.
+                 *
+                 * এটা কখনো opentype.js দিয়ে
+                 * rebuild করা হবে না।
                  */
 
                 originalFontBuffer =
@@ -1331,10 +1499,7 @@ function processFont(file) {
 
 
                 /*
-                 * OpenType.js দিয়ে শুধু
-                 * metadata read করা হবে।
-                 *
-                 * Font rebuild করা হবে না।
+                 * শুধু metadata পড়ার জন্য parse।
                  */
 
                 loadedFont =
@@ -1353,63 +1518,85 @@ function processFont(file) {
 
 
                 const names =
-                    loadedFont.names;
+                    loadedFont.names || {};
 
 
                 /*
-                 * Original metadata save
+                 * Save original metadata.
                  */
 
                 originalMetadata = {
 
                     fontFamily:
-                        getLocalizedName(
-                            names.fontFamily
+                        getName(
+                            names,
+                            "fontFamily"
                         ),
 
                     fontSubfamily:
-                        getLocalizedName(
-                            names.fontSubfamily
+                        getName(
+                            names,
+                            "fontSubfamily"
+                        ),
+
+                    typographicFamily:
+                        getName(
+                            names,
+                            "typographicFamily"
+                        ),
+
+                    typographicSubfamily:
+                        getName(
+                            names,
+                            "typographicSubfamily"
                         ),
 
                     uniqueID:
-                        getLocalizedName(
-                            names.uniqueID
+                        getName(
+                            names,
+                            "uniqueID"
                         ),
 
                     fullName:
-                        getLocalizedName(
-                            names.fullName
+                        getName(
+                            names,
+                            "fullName"
                         ),
 
                     version:
-                        getLocalizedName(
-                            names.version
+                        getName(
+                            names,
+                            "version"
                         ),
 
                     postScriptName:
-                        getLocalizedName(
-                            names.postScriptName
+                        getName(
+                            names,
+                            "postScriptName"
                         ),
 
                     manufacturer:
-                        getLocalizedName(
-                            names.manufacturer
+                        getName(
+                            names,
+                            "manufacturer"
                         ),
 
                     designer:
-                        getLocalizedName(
-                            names.designer
+                        getName(
+                            names,
+                            "designer"
                         ),
 
                     copyright:
-                        getLocalizedName(
-                            names.copyright
+                        getName(
+                            names,
+                            "copyright"
                         ),
 
                     license:
-                        getLocalizedName(
-                            names.license
+                        getName(
+                            names,
+                            "license"
                         )
 
                 };
@@ -1429,6 +1616,18 @@ function processFont(file) {
                     "fontSubfamily",
                     originalMetadata.fontSubfamily ||
                     "Regular"
+                );
+
+
+                setValue(
+                    "typographicFamily",
+                    originalMetadata.typographicFamily
+                );
+
+
+                setValue(
+                    "typographicSubfamily",
+                    originalMetadata.typographicSubfamily
                 );
 
 
@@ -1493,13 +1692,13 @@ function processFont(file) {
                  * Load preview
                  */
 
-                loadFontPreview(
+                loadPreview(
                     originalFontBuffer
                 );
 
 
                 showStatus(
-                    "✅ Font successfully loaded। এখন Metadata edit করতে পারবেন।",
+                    "✅ বাংলা Font successfully loaded। এখন Metadata edit করতে পারবেন।",
                     "success"
                 );
 
@@ -1508,16 +1707,15 @@ function processFont(file) {
             catch(error) {
 
                 console.error(
-                    "Font parse error:",
+                    "FONT LOAD ERROR:",
                     error
                 );
 
 
-                loadedFont =
+                originalFontBuffer =
                     null;
 
-
-                originalFontBuffer =
+                loadedFont =
                     null;
 
 
@@ -1526,7 +1724,8 @@ function processFont(file) {
 
 
                 showStatus(
-                    "❌ এই TTF/OTF Font File parse করা যায়নি।",
+                    "❌ Font load করতে সমস্যা হয়েছে: " +
+                    error.message,
                     "error"
                 );
 
@@ -1539,7 +1738,7 @@ function processFont(file) {
         function() {
 
             showStatus(
-                "Font File read করা সম্ভব হয়নি।",
+                "❌ Font file read করা যায়নি।",
                 "error"
             );
 
@@ -1561,10 +1760,9 @@ fontFile.addEventListener(
     "change",
     function(event) {
 
-        const file =
-            event.target.files[0];
-
-        processFont(file);
+        processFont(
+            event.target.files[0]
+        );
 
     }
 );
@@ -1573,16 +1771,6 @@ fontFile.addEventListener(
 /* ============================================================
    DRAG & DROP
 ============================================================ */
-
-dropZone.addEventListener(
-    "click",
-    function() {
-
-        fontFile.click();
-
-    }
-);
-
 
 dropZone.addEventListener(
     "dragover",
@@ -1616,6 +1804,7 @@ dropZone.addEventListener(
 
         event.preventDefault();
 
+
         dropZone.classList.remove(
             "dragover"
         );
@@ -1632,10 +1821,10 @@ dropZone.addEventListener(
 
 
 /* ============================================================
-   FONT PREVIEW
+   PREVIEW
 ============================================================ */
 
-function loadFontPreview(
+function loadPreview(
     arrayBuffer
 ) {
 
@@ -1643,8 +1832,8 @@ function loadFontPreview(
 
         const fontFace =
             new FontFace(
-                "FontEditorPreview",
-                arrayBuffer
+                "BanglaFontPreview",
+                arrayBuffer.slice(0)
             );
 
 
@@ -1657,6 +1846,7 @@ function loadFontPreview(
                         font
                     );
 
+
                     updatePreview();
 
                 }
@@ -1665,7 +1855,7 @@ function loadFontPreview(
                 function(error) {
 
                     console.warn(
-                        "Preview error:",
+                        "Preview Error:",
                         error
                     );
 
@@ -1677,7 +1867,7 @@ function loadFontPreview(
     catch(error) {
 
         console.warn(
-            "Preview error:",
+            "Preview Error:",
             error
         );
 
@@ -1694,7 +1884,7 @@ function updatePreview() {
         );
 
 
-    const text =
+    const input =
         document.getElementById(
             "previewInput"
         );
@@ -1707,7 +1897,7 @@ function updatePreview() {
 
 
     preview.textContent =
-        text.value;
+        input.value;
 
 
     preview.style.fontSize =
@@ -1715,7 +1905,7 @@ function updatePreview() {
 
 
     preview.style.fontFamily =
-        "FontEditorPreview";
+        "BanglaFontPreview";
 
 }
 
@@ -1737,23 +1927,25 @@ document.getElementById(
 
 
 /* ============================================================
-   BIG ENDIAN HELPERS
+   BINARY HELPERS
 ============================================================ */
 
-function readUInt16(
+function readU16(
     data,
     offset
 ) {
 
     return (
-        (data[offset] << 8) |
+        (
+            data[offset] << 8
+        ) |
         data[offset + 1]
     ) >>> 0;
 
 }
 
 
-function readUInt32(
+function readU32(
     data,
     offset
 ) {
@@ -1768,7 +1960,7 @@ function readUInt32(
 }
 
 
-function writeUInt16(
+function writeU16(
     data,
     offset,
     value
@@ -1783,7 +1975,7 @@ function writeUInt16(
 }
 
 
-function writeUInt32(
+function writeU32(
     data,
     offset,
     value
@@ -1804,11 +1996,9 @@ function writeUInt32(
 }
 
 
-/* ============================================================
-   ALIGN TO 4 BYTES
-============================================================ */
-
-function align4(value) {
+function align4(
+    value
+) {
 
     return (
         (value + 3) &
@@ -1819,15 +2009,67 @@ function align4(value) {
 
 
 /* ============================================================
-   READ SFNT TABLE DIRECTORY
+   SFNT SIGNATURE
 ============================================================ */
 
-function readTableDirectory(
+function isSupportedFont(
+    data
+) {
+
+    if (
+        data.length <
+        12
+    ) {
+
+        return false;
+
+    }
+
+
+    const signature =
+        String.fromCharCode(
+            data[0],
+            data[1],
+            data[2],
+            data[3]
+        );
+
+
+    return (
+
+        signature ===
+            "\x00\x01\x00\x00"
+
+        ||
+
+        signature ===
+            "OTTO"
+
+        ||
+
+        signature ===
+            "true"
+
+        ||
+
+        signature ===
+            "typ1"
+
+    );
+
+}
+
+
+/* ============================================================
+   READ TABLE DIRECTORY
+============================================================ */
+
+function readTables(
     data
 ) {
 
     const numTables =
-        readUInt16(
+        readU16(
             data,
             4
         );
@@ -1844,7 +2086,7 @@ function readTableDirectory(
 
         const directoryOffset =
             12 +
-            (i * 16);
+            i * 16;
 
 
         let tag = "";
@@ -1871,19 +2113,19 @@ function readTableDirectory(
             tag: tag,
 
             checksum:
-                readUInt32(
+                readU32(
                     data,
                     directoryOffset + 4
                 ),
 
             offset:
-                readUInt32(
+                readU32(
                     data,
                     directoryOffset + 8
                 ),
 
             length:
-                readUInt32(
+                readU32(
                     data,
                     directoryOffset + 12
                 ),
@@ -1891,7 +2133,8 @@ function readTableDirectory(
             directoryOffset:
                 directoryOffset,
 
-            index: i
+            index:
+                i
 
         });
 
@@ -1904,19 +2147,27 @@ function readTableDirectory(
 
 
 /* ============================================================
-   UTF-16BE ENCODER
+   UTF-16 BIG ENDIAN
 ============================================================ */
 
 function encodeUTF16BE(
     text
 ) {
 
+    text =
+        String(
+            text || ""
+        );
+
+
     const bytes = [];
 
 
     /*
-     * Convert JavaScript UTF-16 string
-     * directly into OpenType UTF-16BE.
+     * JavaScript strings are UTF-16 internally.
+     *
+     * charCodeAt preserves surrogate pairs,
+     * which is exactly what we need here.
      */
 
     for (
@@ -1945,141 +2196,233 @@ function encodeUTF16BE(
 
 
 /* ============================================================
-   CREATE NEW NAME TABLE
+   ADD NAME RECORD
+============================================================ */
+
+function addNameRecord(
+    records,
+    nameID,
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return;
+
+    }
+
+
+    value =
+        String(value);
+
+
+    if (
+        value.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * English Windows Unicode record
+     */
+
+    records.push({
+
+        platformID: 3,
+
+        encodingID: 1,
+
+        languageID: 0x0409,
+
+        nameID: nameID,
+
+        value: value
+
+    });
+
+
+    /*
+     * Bangla Windows Unicode record
+     *
+     * 0x0445 = Bengali / Bangla
+     */
+
+    records.push({
+
+        platformID: 3,
+
+        encodingID: 1,
+
+        languageID: 0x0445,
+
+        nameID: nameID,
+
+        value: value
+
+    });
+
+}
+
+
+/* ============================================================
+   CREATE BILINGUAL NAME TABLE
 ============================================================ */
 
 function createNameTable(
     metadata
 ) {
 
-    /*
-     * OpenType Name IDs:
-     *
-     * 0  Copyright
-     * 1  Family
-     * 2  Subfamily
-     * 3  Unique ID
-     * 4  Full Name
-     * 5  Version
-     * 6  PostScript Name
-     * 8  Manufacturer
-     * 9  Designer
-     * 13 License
-     */
-
-
-    const sourceRecords = [
-
-        {
-            nameID: 0,
-            value: metadata.copyright
-        },
-
-        {
-            nameID: 1,
-            value: metadata.fontFamily
-        },
-
-        {
-            nameID: 2,
-            value: metadata.fontSubfamily
-        },
-
-        {
-            nameID: 3,
-            value: metadata.uniqueID
-        },
-
-        {
-            nameID: 4,
-            value: metadata.fullName
-        },
-
-        {
-            nameID: 5,
-            value: metadata.version
-        },
-
-        {
-            nameID: 6,
-            value: metadata.postScriptName
-        },
-
-        {
-            nameID: 8,
-            value: metadata.manufacturer
-        },
-
-        {
-            nameID: 9,
-            value: metadata.designer
-        },
-
-        {
-            nameID: 13,
-            value: metadata.license
-        }
-
-    ];
+    const records = [];
 
 
     /*
-     * Only non-empty values
+     * Standard Name IDs
      */
 
-    const records =
-        sourceRecords.filter(
-            function(record) {
-
-                return (
-                    record.value !== null &&
-                    record.value !== undefined &&
-                    String(record.value) !== ""
-                );
-
-            }
-        );
+    addNameRecord(
+        records,
+        0,
+        metadata.copyright
+    );
 
 
-    const headerSize = 6;
+    addNameRecord(
+        records,
+        1,
+        metadata.fontFamily
+    );
 
-    const recordSize = 12;
+
+    addNameRecord(
+        records,
+        2,
+        metadata.fontSubfamily
+    );
+
+
+    addNameRecord(
+        records,
+        3,
+        metadata.uniqueID
+    );
+
+
+    addNameRecord(
+        records,
+        4,
+        metadata.fullName
+    );
+
+
+    addNameRecord(
+        records,
+        5,
+        metadata.version
+    );
+
+
+    addNameRecord(
+        records,
+        6,
+        metadata.postScriptName
+    );
+
+
+    addNameRecord(
+        records,
+        8,
+        metadata.manufacturer
+    );
+
+
+    addNameRecord(
+        records,
+        9,
+        metadata.designer
+    );
+
+
+    addNameRecord(
+        records,
+        13,
+        metadata.license
+    );
+
+
+    /*
+     * Typographic Family
+     * Name ID 16
+     */
+
+    addNameRecord(
+        records,
+        16,
+        metadata.typographicFamily
+    );
+
+
+    /*
+     * Typographic Subfamily
+     * Name ID 17
+     */
+
+    addNameRecord(
+        records,
+        17,
+        metadata.typographicSubfamily
+    );
+
+
+    /*
+     * Calculate header
+     */
+
+    const headerSize =
+        6;
+
+
+    const recordSize =
+        12;
 
 
     const stringOffset =
         headerSize +
-        (
-            records.length *
-            recordSize
-        );
+        records.length *
+        recordSize;
 
 
-    let stringLength = 0;
+    /*
+     * Encode strings
+     */
 
-
-    const encodedRecords =
+    const encoded =
         records.map(
             function(record) {
 
-                const bytes =
-                    encodeUTF16BE(
-                        String(
-                            record.value
-                        )
-                    );
-
-
-                stringLength +=
-                    bytes.length;
-
-
                 return {
+
+                    platformID:
+                        record.platformID,
+
+                    encodingID:
+                        record.encodingID,
+
+                    languageID:
+                        record.languageID,
 
                     nameID:
                         record.nameID,
 
                     bytes:
-                        bytes
+                        encodeUTF16BE(
+                            record.value
+                        )
 
                 };
 
@@ -2087,10 +2430,29 @@ function createNameTable(
         );
 
 
+    let totalStringLength =
+        0;
+
+
+    for (
+        const record
+        of encoded
+    ) {
+
+        totalStringLength +=
+            record.bytes.length;
+
+    }
+
+
+    /*
+     * OpenType name table
+     */
+
     const table =
         new Uint8Array(
             stringOffset +
-            stringLength
+            totalStringLength
         );
 
 
@@ -2098,21 +2460,21 @@ function createNameTable(
      * Header
      */
 
-    writeUInt16(
+    writeU16(
         table,
         0,
         0
     );
 
 
-    writeUInt16(
+    writeU16(
         table,
         2,
-        encodedRecords.length
+        encoded.length
     );
 
 
-    writeUInt16(
+    writeU16(
         table,
         4,
         stringOffset
@@ -2123,91 +2485,60 @@ function createNameTable(
      * Records
      */
 
-    let recordPosition = 6;
+    let recordOffset =
+        6;
 
-    let stringPosition = 0;
+
+    let stringPosition =
+        0;
 
 
     for (
         const record
-        of encodedRecords
+        of encoded
     ) {
 
-        /*
-         * Platform ID
-         *
-         * 3 = Windows
-         */
-
-        writeUInt16(
+        writeU16(
             table,
-            recordPosition,
-            3
+            recordOffset,
+            record.platformID
         );
 
 
-        /*
-         * Encoding ID
-         *
-         * 1 = Unicode BMP
-         */
-
-        writeUInt16(
+        writeU16(
             table,
-            recordPosition + 2,
-            1
+            recordOffset + 2,
+            record.encodingID
         );
 
 
-        /*
-         * Language ID
-         *
-         * 0x0409 = English US
-         */
-
-        writeUInt16(
+        writeU16(
             table,
-            recordPosition + 4,
-            0x0409
+            recordOffset + 4,
+            record.languageID
         );
 
 
-        /*
-         * Name ID
-         */
-
-        writeUInt16(
+        writeU16(
             table,
-            recordPosition + 6,
+            recordOffset + 6,
             record.nameID
         );
 
 
-        /*
-         * String length
-         */
-
-        writeUInt16(
+        writeU16(
             table,
-            recordPosition + 8,
+            recordOffset + 8,
             record.bytes.length
         );
 
 
-        /*
-         * String offset
-         */
-
-        writeUInt16(
+        writeU16(
             table,
-            recordPosition + 10,
+            recordOffset + 10,
             stringPosition
         );
 
-
-        /*
-         * Write actual string
-         */
 
         table.set(
             record.bytes,
@@ -2220,7 +2551,7 @@ function createNameTable(
             record.bytes.length;
 
 
-        recordPosition +=
+        recordOffset +=
             recordSize;
 
     }
@@ -2232,7 +2563,7 @@ function createNameTable(
 
 
 /* ============================================================
-   TABLE CHECKSUM
+   FONT TABLE CHECKSUM
 ============================================================ */
 
 function calculateChecksum(
@@ -2249,13 +2580,6 @@ function calculateChecksum(
         length;
 
 
-    /*
-     * OpenType checksums are calculated
-     * using 32-bit unsigned words.
-     *
-     * Missing bytes at the end are zero.
-     */
-
     for (
         let position = offset;
         position < end;
@@ -2263,25 +2587,29 @@ function calculateChecksum(
     ) {
 
         const b0 =
-            position < end
+            position <
+            end
                 ? data[position]
                 : 0;
 
 
         const b1 =
-            position + 1 < end
+            position + 1 <
+            end
                 ? data[position + 1]
                 : 0;
 
 
         const b2 =
-            position + 2 < end
+            position + 2 <
+            end
                 ? data[position + 2]
                 : 0;
 
 
         const b3 =
-            position + 3 < end
+            position + 3 <
+            end
                 ? data[position + 3]
                 : 0;
 
@@ -2310,7 +2638,7 @@ function calculateChecksum(
 
 
 /* ============================================================
-   CREATE MODIFIED FONT
+   CREATE UPDATED FONT BINARY
 ============================================================ */
 
 function updateFontBinary(
@@ -2325,76 +2653,58 @@ function updateFontBinary(
 
 
     /*
-     * Basic validation
+     * Validate
      */
 
     if (
-        source.length <
-        12
+        !isSupportedFont(
+            source
+        )
     ) {
 
         throw new Error(
-            "Font file খুব ছোট অথবা invalid।"
+            "Invalid অথবা unsupported TTF/OTF Font."
         );
 
     }
 
 
     /*
-     * SFNT signature
-     */
-
-    const signature =
-        String.fromCharCode(
-            source[0],
-            source[1],
-            source[2],
-            source[3]
-        );
-
-
-    const supported =
-        signature ===
-            "\x00\x01\x00\x00" ||
-
-        signature ===
-            "OTTO" ||
-
-        signature ===
-            "true" ||
-
-        signature ===
-            "typ1";
-
-
-    if (!supported) {
-
-        throw new Error(
-            "Unsupported TTF/OTF font format।"
-        );
-
-    }
-
-
-    /*
-     * Read existing table directory
+     * Read tables
      */
 
     const tables =
-        readTableDirectory(
+        readTables(
             source
         );
 
 
-    /*
-     * name table must exist
-     */
+    if (
+        !tables.length
+    ) {
+
+        throw new Error(
+            "Font table পাওয়া যায়নি।"
+        );
+
+    }
+
 
     const nameTable =
         tables.find(
             function(table) {
 
                 return table.tag === "name";
+
+            }
+        );
+
+
+    const headTable =
+        tables.find(
+            function(table) {
+
+                return table.tag === "head";
 
             }
         );
@@ -2409,20 +2719,6 @@ function updateFontBinary(
     }
 
 
-    /*
-     * head table must exist
-     */
-
-    const headTable =
-        tables.find(
-            function(table) {
-
-                return table.tag === "head";
-
-            }
-        );
-
-
     if (!headTable) {
 
         throw new Error(
@@ -2433,7 +2729,7 @@ function updateFontBinary(
 
 
     /*
-     * Create new name table
+     * New bilingual name table
      */
 
     const newNameTable =
@@ -2443,24 +2739,18 @@ function updateFontBinary(
 
 
     /*
-     * ============================================
-     * IMPORTANT
+     * Rebuild SFNT container,
+     * NOT the actual font outlines.
      *
-     * আমরা নতুন font rebuild করছি,
-     * কিন্তু glyph / cmap / GSUB / GPOS /
-     * glyf / CFF / fvar / OS2 ইত্যাদির
-     * actual binary data unchanged রাখা হচ্ছে।
-     *
-     * শুধু name table replace করা হবে।
-     * ============================================
+     * All original table bytes except
+     * name table are copied exactly.
      */
-
 
     const numTables =
         tables.length;
 
 
-    const headerSize =
+    const sfntHeaderSize =
         12;
 
 
@@ -2468,16 +2758,12 @@ function updateFontBinary(
         numTables * 16;
 
 
-    let currentOffset =
+    let nextOffset =
         align4(
-            headerSize +
+            sfntHeaderSize +
             directorySize
         );
 
-
-    /*
-     * Prepare output table information
-     */
 
     const outputTables = [];
 
@@ -2487,25 +2773,33 @@ function updateFontBinary(
         of tables
     ) {
 
-        const isName =
-            table.tag === "name";
+        let tableData;
 
 
-        const data =
-            isName
+        if (
+            table.tag === "name"
+        ) {
 
-                ? newNameTable
+            tableData =
+                newNameTable;
 
-                : source.slice(
+        }
+
+        else {
+
+            tableData =
+                source.slice(
                     table.offset,
                     table.offset +
                     table.length
                 );
 
+        }
 
-        currentOffset =
+
+        nextOffset =
             align4(
-                currentOffset
+                nextOffset
             );
 
 
@@ -2515,13 +2809,13 @@ function updateFontBinary(
                 table.tag,
 
             data:
-                data,
+                tableData,
 
             offset:
-                currentOffset,
+                nextOffset,
 
             length:
-                data.length,
+                tableData.length,
 
             originalIndex:
                 table.index
@@ -2529,32 +2823,30 @@ function updateFontBinary(
         });
 
 
-        currentOffset +=
+        nextOffset +=
             align4(
-                data.length
+                tableData.length
             );
 
     }
 
 
     /*
-     * Final font size
+     * Create final binary
      */
-
-    const finalSize =
-        currentOffset;
-
 
     const result =
         new Uint8Array(
-            finalSize
+            nextOffset
         );
 
 
     /*
-     * ============================================
-     * COPY SFNT HEADER
-     * ============================================
+     * Copy original SFNT header.
+     *
+     * numTables remains the same.
+     * searchRange / entrySelector / rangeShift
+     * remain valid because table count is unchanged.
      */
 
     result.set(
@@ -2567,9 +2859,7 @@ function updateFontBinary(
 
 
     /*
-     * ============================================
-     * COPY / WRITE TABLE DATA
-     * ============================================
+     * Copy table data
      */
 
     for (
@@ -2577,27 +2867,16 @@ function updateFontBinary(
         of outputTables
     ) {
 
-        /*
-         * Table data
-         */
-
         result.set(
             table.data,
             table.offset
         );
 
-
-        /*
-         * Padding bytes are already zero
-         */
-
     }
 
 
     /*
-     * ============================================
-     * WRITE TABLE DIRECTORY
-     * ============================================
+     * Write table directory
      */
 
     for (
@@ -2612,9 +2891,7 @@ function updateFontBinary(
 
         const directoryOffset =
             12 +
-            (
-                i * 16
-            );
+            i * 16;
 
 
         /*
@@ -2636,10 +2913,10 @@ function updateFontBinary(
 
 
         /*
-         * Checksum initially zero.
+         * Checksum initially zero
          */
 
-        writeUInt32(
+        writeU32(
             result,
             directoryOffset + 4,
             0
@@ -2650,7 +2927,7 @@ function updateFontBinary(
          * Offset
          */
 
-        writeUInt32(
+        writeU32(
             result,
             directoryOffset + 8,
             table.offset
@@ -2661,7 +2938,7 @@ function updateFontBinary(
          * Length
          */
 
-        writeUInt32(
+        writeU32(
             result,
             directoryOffset + 12,
             table.length
@@ -2671,9 +2948,7 @@ function updateFontBinary(
 
 
     /*
-     * ============================================
-     * FIND NEW HEAD TABLE
-     * ============================================
+     * Find new HEAD table
      */
 
     const newHead =
@@ -2689,23 +2964,20 @@ function updateFontBinary(
     if (!newHead) {
 
         throw new Error(
-            "New font-এ head table পাওয়া যায়নি।"
+            "HEAD table পাওয়া যায়নি।"
         );
 
     }
 
 
     /*
-     * ============================================
-     * checkSumAdjustment = 0
+     * checkSumAdjustment must be zero
+     * before calculating the font checksum.
      *
-     * head table:
-     *
-     * +8 = checkSumAdjustment
-     * ============================================
+     * head + 8
      */
 
-    writeUInt32(
+    writeU32(
         result,
         newHead.offset + 8,
         0
@@ -2713,9 +2985,7 @@ function updateFontBinary(
 
 
     /*
-     * ============================================
-     * CALCULATE EVERY TABLE CHECKSUM
-     * ============================================
+     * Calculate every table checksum.
      */
 
     for (
@@ -2730,16 +3000,14 @@ function updateFontBinary(
 
         const directoryOffset =
             12 +
-            (
-                i * 16
-            );
+            i * 16;
 
 
         /*
-         * Make checksum field zero
+         * Reset checksum field
          */
 
-        writeUInt32(
+        writeU32(
             result,
             directoryOffset + 4,
             0
@@ -2754,7 +3022,7 @@ function updateFontBinary(
             );
 
 
-        writeUInt32(
+        writeU32(
             result,
             directoryOffset + 4,
             checksum
@@ -2764,26 +3032,20 @@ function updateFontBinary(
 
 
     /*
-     * ============================================
-     * IMPORTANT:
+     * HEAD checksum was calculated with
+     * checkSumAdjustment = 0.
      *
-     * head checksum above was calculated
-     * with checkSumAdjustment = 0.
-     *
-     * That checksum must remain.
-     *
-     * Now calculate entire font checksum.
-     * ============================================
+     * Now calculate whole font checksum.
      */
 
-    writeUInt32(
+    writeU32(
         result,
         newHead.offset + 8,
         0
     );
 
 
-    const wholeChecksum =
+    const wholeFontChecksum =
         calculateChecksum(
             result,
             0,
@@ -2792,34 +3054,35 @@ function updateFontBinary(
 
 
     /*
-     * OpenType magic number
+     * OpenType magic checksum value
      */
 
-    const adjustment =
+    const checkSumAdjustment =
         (
             0xB1B0AFBA -
-            wholeChecksum
+            wholeFontChecksum
         ) >>> 0;
 
 
     /*
-     * Write final checkSumAdjustment
+     * Write final adjustment
      */
 
-    writeUInt32(
+    writeU32(
         result,
         newHead.offset + 8,
-        adjustment
+        checkSumAdjustment
     );
 
 
     /*
-     * DO NOT recalculate head checksum
-     * after checkSumAdjustment.
+     * IMPORTANT:
      *
-     * The head checksum in the directory
-     * is intentionally the checksum calculated
-     * while checkSumAdjustment was zero.
+     * Do NOT recalculate HEAD table checksum
+     * after writing checkSumAdjustment.
+     *
+     * Directory checksum represents the HEAD
+     * table with adjustment field treated as zero.
      */
 
 
@@ -2829,12 +3092,12 @@ function updateFontBinary(
 
 
 /* ============================================================
-   GET METADATA
+   COLLECT METADATA
 ============================================================ */
 
-function getFormMetadata() {
+function collectMetadata() {
 
-    return {
+    const metadata = {
 
         fontFamily:
             getValue(
@@ -2844,6 +3107,16 @@ function getFormMetadata() {
         fontSubfamily:
             getValue(
                 "fontSubfamily"
+            ),
+
+        typographicFamily:
+            getValue(
+                "typographicFamily"
+            ),
+
+        typographicSubfamily:
+            getValue(
+                "typographicSubfamily"
             ),
 
         uniqueID:
@@ -2888,14 +3161,114 @@ function getFormMetadata() {
 
     };
 
+
+    /*
+     * Defaults
+     */
+
+    if (
+        !metadata.fontSubfamily
+    ) {
+
+        metadata.fontSubfamily =
+            "Regular";
+
+    }
+
+
+    if (
+        !metadata.version
+    ) {
+
+        metadata.version =
+            "Version 1.00";
+
+    }
+
+
+    if (
+        !metadata.fullName
+    ) {
+
+        metadata.fullName =
+            metadata.fontFamily +
+            " " +
+            metadata.fontSubfamily;
+
+    }
+
+
+    if (
+        !metadata.typographicFamily
+    ) {
+
+        metadata.typographicFamily =
+            metadata.fontFamily;
+
+    }
+
+
+    if (
+        !metadata.typographicSubfamily
+    ) {
+
+        metadata.typographicSubfamily =
+            metadata.fontSubfamily;
+
+    }
+
+
+    /*
+     * PostScript name cannot safely contain
+     * arbitrary Bangla Unicode characters.
+     *
+     * Therefore generate ASCII-safe fallback.
+     */
+
+    if (
+        !metadata.postScriptName
+    ) {
+
+        let ps =
+            (
+                metadata.fontFamily +
+                "-" +
+                metadata.fontSubfamily
+            )
+            .replace(
+                /\s+/g,
+                "-"
+            )
+            .replace(
+                /[^A-Za-z0-9._-]/g,
+                ""
+            );
+
+
+        if (!ps) {
+
+            ps =
+                "BanglaFont-Regular";
+
+        }
+
+
+        metadata.postScriptName =
+            ps;
+
+    }
+
+
+    return metadata;
+
 }
 
 
 /* ============================================================
-   CREATE DOWNLOAD FILE NAME
+   SAFE DOWNLOAD NAME
 ============================================================ */
 
-function getDownloadFileName(
+function createDownloadName(
     metadata
 ) {
 
@@ -2906,13 +3279,14 @@ function getDownloadFileName(
     if (!name) {
 
         name =
-            "edited-font";
+            "Bangla-Font";
 
     }
 
 
     /*
-     * Remove illegal filename characters
+     * Keep Bangla Unicode in filename.
+     * Only remove Windows-invalid characters.
      */
 
     name =
@@ -2929,25 +3303,25 @@ function getDownloadFileName(
     if (!name) {
 
         name =
-            "edited-font";
+            "Bangla-Font";
 
     }
 
 
-    const originalIsOTF =
+    const isOTF =
         originalFileName
             .toLowerCase()
             .endsWith(".otf");
 
 
     const extension =
-        originalIsOTF
+        isOTF
             ? ".otf"
             : ".ttf";
 
 
     return (
-        "edited_" +
+        "Updated-" +
         name +
         extension
     );
@@ -2956,15 +3330,144 @@ function getDownloadFileName(
 
 
 /* ============================================================
-   SAVE & DOWNLOAD
+   RELIABLE DOWNLOAD
+============================================================ */
+
+function downloadFont(
+    arrayBuffer,
+    fileName,
+    mimeType
+) {
+
+    if (
+        !arrayBuffer
+    ) {
+
+        throw new Error(
+            "Font binary পাওয়া যায়নি।"
+        );
+
+    }
+
+
+    const blob =
+        new Blob(
+            [
+                arrayBuffer
+            ],
+            {
+                type:
+                    mimeType
+            }
+        );
+
+
+    if (
+        blob.size === 0
+    ) {
+
+        throw new Error(
+            "Downloaded Font empty হয়েছে।"
+        );
+
+    }
+
+
+    /*
+     * Create Blob URL
+     */
+
+    const url =
+        window.URL.createObjectURL(
+            blob
+        );
+
+
+    /*
+     * Create temporary anchor
+     */
+
+    const anchor =
+        document.createElement(
+            "a"
+        );
+
+
+    anchor.href =
+        url;
+
+
+    anchor.download =
+        fileName;
+
+
+    anchor.style.display =
+        "none";
+
+
+    document.body.appendChild(
+        anchor
+    );
+
+
+    /*
+     * Normal browser download.
+     *
+     * This function is called directly from
+     * the user's button click event.
+     */
+
+    anchor.click();
+
+
+    /*
+     * Cleanup
+     */
+
+    setTimeout(
+        function() {
+
+            if (
+                anchor.parentNode
+            ) {
+
+                anchor.parentNode.removeChild(
+                    anchor
+                );
+
+            }
+
+
+            window.URL.revokeObjectURL(
+                url
+            );
+
+        },
+        5000
+    );
+
+
+    return true;
+
+}
+
+
+/* ============================================================
+   SAVE + DOWNLOAD
 ============================================================ */
 
 function saveAndDownload() {
 
-    if (!originalFontBuffer) {
+    /*
+     * Make sure a font was loaded.
+     */
+
+    if (
+        !originalFontBuffer
+    ) {
 
         showStatus(
-            "প্রথমে একটি Font File Select করুন।",
+            "❌ প্রথমে একটি বাংলা TTF অথবা OTF Font Select করুন।",
             "error"
         );
 
@@ -2980,21 +3483,21 @@ function saveAndDownload() {
 
 
         downloadButton.textContent =
-            "⏳ Processing Font...";
+            "⏳ Font তৈরি হচ্ছে...";
 
 
         showStatus(
-            "Font metadata update করা হচ্ছে...",
+            "বাংলা Font metadata update করা হচ্ছে...",
             "info"
         );
 
 
         /*
-         * Get current form data
+         * Collect metadata
          */
 
         const metadata =
-            getFormMetadata();
+            collectMetadata();
 
 
         /*
@@ -3013,69 +3516,10 @@ function saveAndDownload() {
 
 
         /*
-         * Defaults
-         */
-
-        if (
-            !metadata.fontSubfamily
-        ) {
-
-            metadata.fontSubfamily =
-                "Regular";
-
-        }
-
-
-        if (
-            !metadata.version
-        ) {
-
-            metadata.version =
-                "Version 1.00";
-
-        }
-
-
-        if (
-            !metadata.fullName
-        ) {
-
-            metadata.fullName =
-                metadata.fontFamily +
-                " " +
-                metadata.fontSubfamily;
-
-        }
-
-
-        /*
-         * Generate PostScript fallback
-         */
-
-        if (
-            !metadata.postScriptName
-        ) {
-
-            metadata.postScriptName =
-                (
-                    metadata.fontFamily +
-                    "-" +
-                    metadata.fontSubfamily
-                )
-                .replace(
-                    /\s+/g,
-                    "-"
-                )
-                .replace(
-                    /[^A-Za-z0-9._-]/g,
-                    ""
-                );
-
-        }
-
-
-        /*
-         * Create modified font
+         * Create modified binary.
+         *
+         * Original glyph and shaping tables
+         * are preserved.
          */
 
         const modifiedBuffer =
@@ -3087,18 +3531,19 @@ function saveAndDownload() {
 
         if (
             !modifiedBuffer ||
-            modifiedBuffer.byteLength === 0
+            modifiedBuffer.byteLength <
+            100
         ) {
 
             throw new Error(
-                "Modified Font Binary তৈরি করা যায়নি।"
+                "Valid Font Binary তৈরি করা যায়নি।"
             );
 
         }
 
 
         /*
-         * Determine MIME
+         * Determine original extension
          */
 
         const isOTF =
@@ -3114,97 +3559,37 @@ function saveAndDownload() {
 
 
         /*
-         * Create Blob
+         * Download filename
          */
 
-        const blob =
-            new Blob(
-                [
-                    modifiedBuffer
-                ],
-                {
-                    type:
-                        mimeType
-                }
-            );
-
-
-        /*
-         * Download URL
-         */
-
-        const url =
-            URL.createObjectURL(
-                blob
-            );
-
-
-        /*
-         * Create download link
-         */
-
-        const link =
-            document.createElement(
-                "a"
-            );
-
-
-        link.href =
-            url;
-
-
-        link.download =
-            getDownloadFileName(
+        const downloadName =
+            createDownloadName(
                 metadata
             );
 
 
-        link.style.display =
-            "none";
+        /*
+         * Start download
+         */
+
+        downloadButton.textContent =
+            "⬇ Download হচ্ছে...";
 
 
-        document.body.appendChild(
-            link
+        downloadFont(
+            modifiedBuffer,
+            downloadName,
+            mimeType
         );
 
 
         /*
-         * Start browser download
+         * Success
          */
-
-        link.click();
-
-
-        /*
-         * Cleanup
-         */
-
-        setTimeout(
-            function() {
-
-                if (
-                    link.parentNode
-                ) {
-
-                    link.parentNode.removeChild(
-                        link
-                    );
-
-                }
-
-
-                URL.revokeObjectURL(
-                    url
-                );
-
-            },
-            3000
-        );
-
 
         showStatus(
-            "✅ Metadata successfully update হয়েছে। Download শুরু হয়েছে: " +
-            link.download,
+            "✅ বাংলা Font successfully update হয়েছে। Download শুরু হয়েছে: " +
+            downloadName,
             "success"
         );
 
@@ -3213,7 +3598,7 @@ function saveAndDownload() {
     catch(error) {
 
         console.error(
-            "FONT DOWNLOAD ERROR:",
+            "FONT UPDATE ERROR:",
             error
         );
 
@@ -3239,7 +3624,7 @@ function saveAndDownload() {
                     "⬇ Update Metadata & Download Font";
 
             },
-            1200
+            1500
         );
 
     }
@@ -3248,7 +3633,7 @@ function saveAndDownload() {
 
 
 /* ============================================================
-   RESET METADATA
+   RESET
 ============================================================ */
 
 document.getElementById(
@@ -3257,7 +3642,9 @@ document.getElementById(
     "click",
     function() {
 
-        if (!originalFontBuffer) {
+        if (
+            !originalFontBuffer
+        ) {
 
             showStatus(
                 "প্রথমে একটি Font File Select করুন।",
@@ -3279,6 +3666,18 @@ document.getElementById(
             "fontSubfamily",
             originalMetadata.fontSubfamily ||
             "Regular"
+        );
+
+
+        setValue(
+            "typographicFamily",
+            originalMetadata.typographicFamily
+        );
+
+
+        setValue(
+            "typographicSubfamily",
+            originalMetadata.typographicSubfamily
         );
 
 
@@ -3332,7 +3731,7 @@ document.getElementById(
 
 
         showStatus(
-            "Original Metadata restore করা হয়েছে।",
+            "↻ Original Metadata restore হয়েছে।",
             "success"
         );
 
