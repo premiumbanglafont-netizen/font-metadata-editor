@@ -179,25 +179,24 @@
 
         reader.onload = function(e) {
             try {
-                // opentype.js দিয়ে ফন্ট ফাইল পার্স করা
                 loadedFont = opentype.parse(e.target.result);
                 const names = loadedFont.names || {};
 
-                // নামের ডাটা ইনপুট ফিল্ডে সেট করা
-                document.getElementById('fontFamily').value = getLocalizedName(names.fontFamily);
-                document.getElementById('fontSubfamily').value = getLocalizedName(names.fontSubfamily, 'Regular');
-                document.getElementById('uniqueID').value = getLocalizedName(names.uniqueID);
-                document.getElementById('fullName').value = getLocalizedName(names.fullName);
-                document.getElementById('version').value = getLocalizedName(names.version, 'Version 1.00');
-                document.getElementById('postScriptName').value = getLocalizedName(names.postScriptName);
-                document.getElementById('manufacturer').value = getLocalizedName(names.manufacturer);
-                document.getElementById('designer').value = getLocalizedName(names.designer);
-                document.getElementById('copyright').value = getLocalizedName(names.copyright);
-                document.getElementById('license').value = getLocalizedName(names.license);
+                // ফিল্ডে নিখুঁত মান এক্সট্র্যাক্ট করে বসানো
+                document.getElementById('fontFamily').value = extractString(names.fontFamily);
+                document.getElementById('fontSubfamily').value = extractString(names.fontSubfamily) || 'Regular';
+                document.getElementById('uniqueID').value = extractString(names.uniqueID);
+                document.getElementById('fullName').value = extractString(names.fullName);
+                document.getElementById('version').value = extractString(names.version) || 'Version 1.00';
+                document.getElementById('postScriptName').value = extractString(names.postScriptName);
+                document.getElementById('manufacturer').value = extractString(names.manufacturer);
+                document.getElementById('designer').value = extractString(names.designer);
+                document.getElementById('copyright').value = extractString(names.copyright);
+                document.getElementById('license').value = extractString(names.license);
 
                 document.getElementById('editorSection').style.display = 'block';
 
-                // লাইভ প্রিভিউ সেটআপ
+                // ফন্ট লাইভ প্রিভিউ সেটআপ
                 const fontUrl = URL.createObjectURL(file);
                 const fontFace = new FontFace('customFontPreview', `url(${fontUrl})`);
                 fontFace.load().then(function(loaded) {
@@ -208,7 +207,7 @@
                 });
 
             } catch (err) {
-                alert("ফন্ট ফাইলটি সঠিকভাবে রিড করা যায়নি। এটি একটি ভ্যালিড TTF বা OTF ফাইল কিনা তা নিশ্চিত করুন।");
+                alert("ফন্ট ফাইলটি সঠিকভাবে পার্স করা যায়নি। একটি সঠিক TTF বা OTF ফাইল চেষ্টা করুন।");
                 console.error(err);
             }
         };
@@ -216,30 +215,28 @@
         reader.readAsArrayBuffer(file);
     }
 
-    // অলটারনেটিভ প্ল্যাটফর্ম ও ল্যাঙ্গুয়েজ কি (Key) হ্যান্ডেল করার জন্য আপডেট করা ফাংশন
-    function getLocalizedName(obj, fallback = '') {
-        if (!obj) return fallback;
-        if (typeof obj === 'string') return obj;
+    // অল-ইন-ওয়ান স্ট্রিং এক্সট্র্যাক্টর (যেকোনো অবজেক্ট থেকে স্ট্রিং ভ্যালু খুঁজে বের করবে)
+    function extractString(val) {
+        if (!val) return '';
+        if (typeof val === 'string') return val;
         
-        if (typeof obj === 'object') {
-            if (obj.en) return obj.en;
-            if (obj['en-US']) return obj['en-US'];
-            if (obj['en-GB']) return obj['en-GB'];
-            
-            const keys = Object.keys(obj);
-            if (keys.length > 0) {
-                const firstVal = obj[keys[0]];
-                if (typeof firstVal === 'string') return firstVal;
-                if (typeof firstVal === 'object' && firstVal !== null) {
-                    const innerValues = Object.values(firstVal);
-                    if (innerValues.length > 0) return innerValues[0];
-                }
+        if (typeof val === 'object') {
+            // ১. সরাসরি ইংরেজি ভাষার জন্য চেক
+            if (val.en) return extractString(val.en);
+            if (val['en-US']) return extractString(val['en-US']);
+            if (val['en-GB']) return extractString(val['en-GB']);
+
+            // ২. যেকোনো কি (Key) থেকে প্রথম মান চেক
+            const values = Object.values(val);
+            for (let i = 0; i < values.length; i++) {
+                const res = extractString(values[i]);
+                if (res) return res;
             }
         }
-        return fallback;
+        return '';
     }
 
-    // মেটাডেটা সুরক্ষিতভাবে আপডেটের ফাংশন
+    // মেটাডেটা সেট করার নিরাপদ ফাংশন
     function setLocalizedName(obj, value) {
         const val = value || '';
         if (typeof obj === 'object' && obj !== null) {
@@ -252,7 +249,6 @@
     function saveAndDownload() {
         if (!loadedFont) return;
 
-        // ইনপুট অনুযায়ী মেটাডেটা অবজেক্ট আপডেট
         loadedFont.names.fontFamily = setLocalizedName(loadedFont.names.fontFamily, document.getElementById('fontFamily').value);
         loadedFont.names.fontSubfamily = setLocalizedName(loadedFont.names.fontSubfamily, document.getElementById('fontSubfamily').value);
         loadedFont.names.uniqueID = setLocalizedName(loadedFont.names.uniqueID, document.getElementById('uniqueID').value);
@@ -265,7 +261,6 @@
         loadedFont.names.license = setLocalizedName(loadedFont.names.license, document.getElementById('license').value);
 
         try {
-            // বাইনারি ফন্ট ফাইল তৈরি ও ডাউনলোড
             const arrayBuffer = loadedFont.toArrayBuffer();
             const blob = new Blob([arrayBuffer], { type: 'font/ttf' });
             const url = URL.createObjectURL(blob);
@@ -279,7 +274,7 @@
             
             setTimeout(() => URL.revokeObjectURL(url), 1000);
         } catch (e) {
-            alert("ফন্ট ফাইল সেভ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+            alert("ফন্ট মেটাডেটা আপডেট ও ডাউনলোডে সমস্যা হয়েছে।");
             console.error(e);
         }
     }
