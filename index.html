@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universal Font Metadata Editor</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -14,13 +15,13 @@
         body {
             background-color: #f4f6f9;
             color: #333;
-            padding: 10px;
+            padding: 15px;
         }
         .container {
             width: 100%;
             max-width: 650px;
             background: #ffffff;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             margin: 0 auto;
@@ -32,6 +33,16 @@
             padding-bottom: 8px;
             text-align: center;
             font-size: 1.2rem;
+        }
+        .status-box {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
         .file-box {
             border: 2px dashed #1a73e8;
@@ -94,7 +105,10 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .btn-download:hover { background: #218838; }
+        .btn-download:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -102,7 +116,9 @@
 <div class="container">
     <h2>Font Metadata Editor Tool</h2>
 
-    <div class="file-box" onclick="document.getElementById('fontFile').click()">
+    <div class="status-box" id="statusText">⚙️ System Initializing (Engine Loading)...</div>
+
+    <div class="file-box" id="fileBox" style="display:none;" onclick="document.getElementById('fontFile').click()">
         <label for="fontFile">📁 Select Font File (.ttf, .otf)</label>
         <input accept=".ttf,.otf" id="fontFile" onchange="processFont(event)" type="file" />
     </div>
@@ -168,102 +184,101 @@
             <div id="fontPreviewText">Abc 123 - আমাদের দেশ আমার বাংলাদেশ। ঞ্চ ঞ্ছ ঞ্জ জ্ঞ ক্ষ হ্ম</div>
         </div>
 
-        <button class="btn-download" onclick="saveAndDownload()">Update Metadata &amp; Download Font</button>
+        <button class="btn-download" id="downloadBtn" onclick="saveAndDownload()">Update Metadata &amp; Download Font</button>
     </div>
 </div>
 
 <script>
-    let rawFontBuffer = null;
+    let pyodide = null;
     let originalFileName = "edited-font.ttf";
+    let rawFontData = null;
+
+    async function initPyodide() {
+        try {
+            pyodide = await loadPyodide();
+            await pyodide.loadPackage("micropip");
+            const micropip = pyodide.pyimport("micropip");
+            await micropip.install("fonttools");
+
+            document.getElementById('statusText').innerText = "✅ Ready! Select a font file.";
+            document.getElementById('statusText').style.color = "#28a745";
+            document.getElementById('fileBox').style.display = "block";
+        } catch (err) {
+            document.getElementById('statusText').innerText = "❌ Engine load failed. Please refresh.";
+            document.getElementById('statusText').style.color = "#dc3545";
+        }
+    }
+
+    initPyodide();
 
     function processFont(event) {
         const file = event.target.files[0];
-        if (!file) return;
+        if (!file || !pyodide) return;
 
         originalFileName = file.name;
         const reader = new FileReader();
 
-        reader.onload = function(e) {
-            try {
-                rawFontBuffer = e.target.result;
-                const metadata = extractFontMetadata(rawFontBuffer);
+        reader.onload = async function(e) {
+            rawFontData = new Uint8Array(e.target.result);
+            
+            // Write input font to Pyodide Virtual File System
+            pyodide.FS.writeFile("input_font.ttf", rawFontData);
 
-                document.getElementById('copyright').value = metadata[0] || '';
-                document.getElementById('fontFamily').value = metadata[1] || '';
-                document.getElementById('fontSubfamily').value = metadata[2] || 'Regular';
-                document.getElementById('uniqueID').value = metadata[3] || '';
-                document.getElementById('fullName').value = metadata[4] || '';
-                document.getElementById('version').value = metadata[5] || 'Version 1.00';
-                document.getElementById('postScriptName').value = metadata[6] || '';
-                document.getElementById('manufacturer').value = metadata[8] || '';
-                document.getElementById('designer').value = metadata[9] || '';
-                document.getElementById('description').value = metadata[10] || '';
-                document.getElementById('license').value = metadata[13] || '';
+            // Python script to read name table safely
+            const pyCode = `
+from fontTools.ttLib import TTFont
+
+font = TTFont("input_font.ttf")
+name_table = font.get('name')
+
+metadata = {}
+if name_table:
+    for record in name_table.names:
+        try:
+            metadata[record.nameID] = record.toUnicode()
+        except:
+            pass
+
+metadata
+`;
+            try {
+                const metadataMap = await pyodide.runPythonAsync(pyCode);
+                const metadata = metadataMap.toJs();
+
+                document.getElementById('copyright').value = metadata.get(0) || '';
+                document.getElementById('fontFamily').value = metadata.get(1) || '';
+                document.getElementById('fontSubfamily').value = metadata.get(2) || 'Regular';
+                document.getElementById('uniqueID').value = metadata.get(3) || '';
+                document.getElementById('fullName').value = metadata.get(4) || '';
+                document.getElementById('version').value = metadata.get(5) || 'Version 1.00';
+                document.getElementById('postScriptName').value = metadata.get(6) || '';
+                document.getElementById('manufacturer').value = metadata.get(8) || '';
+                document.getElementById('designer').value = metadata.get(9) || '';
+                document.getElementById('description').value = metadata.get(10) || '';
+                document.getElementById('license').value = metadata.get(13) || '';
 
                 document.getElementById('editorSection').style.display = 'block';
 
-                const fontFace = new FontFace('customFontPreview', rawFontBuffer.slice(0));
-                fontFace.load().then(function(loaded) {
-                    document.fonts.add(loaded);
-                    document.getElementById('fontPreviewText').style.fontFamily = 'customFontPreview';
-                }).catch(function() {});
+                // Font Preview
+                const blob = new Blob([rawFontData], { type: 'font/ttf' });
+                const fontUrl = URL.createObjectURL(blob);
+                const fontFace = new FontFace('customFontPreview', `url(${fontUrl})`);
+                await fontFace.load();
+                document.fonts.add(fontFace);
+                document.getElementById('fontPreviewText').style.fontFamily = 'customFontPreview';
 
             } catch (err) {
-                alert("Please select a valid TTF/OTF font file.");
+                alert("Error parsing font: " + err);
             }
         };
 
         reader.readAsArrayBuffer(file);
     }
 
-    function extractFontMetadata(buffer) {
-        const view = new DataView(buffer);
-        const numTables = view.getUint16(4);
-        let nameOffset = 0;
-
-        for (let i = 0; i < numTables; i++) {
-            const tag = String.fromCharCode(view.getUint8(12 + i*16), view.getUint8(13 + i*16), view.getUint8(14 + i*16), view.getUint8(15 + i*16));
-            if (tag === 'name') {
-                nameOffset = view.getUint32(20 + i*16);
-                break;
-            }
-        }
-
-        const data = {};
-        if (!nameOffset) return data;
-
-        const count = view.getUint16(nameOffset + 2);
-        const stringOffset = nameOffset + view.getUint16(nameOffset + 4);
-
-        for (let i = 0; i < count; i++) {
-            const rec = nameOffset + 6 + i * 12;
-            const platformID = view.getUint16(rec);
-            const nameID = view.getUint16(rec + 6);
-            const length = view.getUint16(rec + 8);
-            const offset = view.getUint16(rec + 10);
-
-            let str = "";
-            const bytes = new Uint8Array(buffer, stringOffset + offset, length);
-
-            if (platformID === 3 || platformID === 0) {
-                for (let j = 0; j < length; j += 2) {
-                    str += String.fromCharCode((bytes[j] << 8) | bytes[j + 1]);
-                }
-            } else {
-                for (let j = 0; j < length; j++) {
-                    str += String.fromCharCode(bytes[j]);
-                }
-            }
-
-            if (!data[nameID] || platformID === 3) {
-                data[nameID] = str;
-            }
-        }
-        return data;
-    }
-
-    function saveAndDownload() {
-        if (!rawFontBuffer) return;
+    async function saveAndDownload() {
+        const downloadBtn = document.getElementById('downloadBtn');
+        downloadBtn.disabled = true;
+        downloadBtn.innerText = "Processing Font...";
 
         const inputs = {
             0: document.getElementById('copyright').value,
@@ -279,128 +294,44 @@
             13: document.getElementById('license').value
         };
 
-        const updatedFont = patchMetadataSafely(rawFontBuffer, inputs);
-        const blob = new Blob([updatedFont], { type: 'font/ttf' });
+        pyodide.globals.set("user_inputs", inputs);
 
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = originalFileName || 'edited-font.ttf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
+        const pyCode = `
+from fontTools.ttLib import TTFont
 
-    function calcTableChecksum(buffer, offset, length) {
-        const view = new DataView(buffer, offset);
-        let sum = 0;
-        const nLongs = Math.floor((length + 3) / 4);
-        for (let i = 0; i < nLongs; i++) {
-            sum = (sum + view.getUint32(i * 4)) >>> 0;
-        }
-        return sum;
-    }
+font = TTFont("input_font.ttf")
+name_table = font.get('name')
 
-    function patchMetadataSafely(buffer, inputs) {
-        let stringBytes = [];
-        let nameRecords = [];
-        let currOffset = 0;
+if name_table:
+    for name_id, val in user_inputs.items():
+        if val is not None:
+            # Set Name Record for Windows (3, 1, 0x0409) and Mac (1, 0, 0)
+            name_table.setName(str(val), int(name_id), 3, 1, 0x0409)
+            name_table.setName(str(val), int(name_id), 1, 0, 0)
 
-        Object.keys(inputs).forEach(id => {
-            const val = inputs[id];
-            if (!val) return;
+font.save("output_font.ttf")
+`;
 
-            // 1. Macintosh Record (Platform 1)
-            let macBytes = [];
-            for (let i = 0; i < val.length; i++) macBytes.push(val.charCodeAt(i) & 0xFF);
-            nameRecords.push({
-                platformID: 1, encodingID: 0, languageID: 0,
-                nameID: parseInt(id), length: macBytes.length, offset: currOffset
-            });
-            stringBytes = stringBytes.concat(macBytes);
-            currOffset += macBytes.length;
+        try {
+            await pyodide.runPythonAsync(pyCode);
+            const outputBytes = pyodide.FS.readFile("output_font.ttf");
 
-            // 2. Windows Record (Platform 3)
-            let winBytes = [];
-            for (let i = 0; i < val.length; i++) {
-                const code = val.charCodeAt(i);
-                winBytes.push((code >> 8) & 0xFF);
-                winBytes.push(code & 0xFF);
-            }
-            nameRecords.push({
-                platformID: 3, encodingID: 1, languageID: 0x0409,
-                nameID: parseInt(id), length: winBytes.length, offset: currOffset
-            });
-            stringBytes = stringBytes.concat(winBytes);
-            currOffset += winBytes.length;
-        });
+            const blob = new Blob([outputBytes], { type: 'font/ttf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = originalFileName || 'edited-font.ttf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-        const unpaddedSize = 6 + (nameRecords.length * 12) + stringBytes.length;
-        const newNameSize = (unpaddedSize + 3) & ~3;
-        const newNameBuf = new ArrayBuffer(newNameSize);
-        const nView = new DataView(newNameBuf);
-
-        nView.setUint16(0, 0);
-        nView.setUint16(2, nameRecords.length);
-        nView.setUint16(4, 6 + (nameRecords.length * 12));
-
-        nameRecords.forEach((r, idx) => {
-            const pos = 6 + idx * 12;
-            nView.setUint16(pos, r.platformID);
-            nView.setUint16(pos + 2, r.encodingID);
-            nView.setUint16(pos + 4, r.languageID);
-            nView.setUint16(pos + 6, r.nameID);
-            nView.setUint16(pos + 8, r.length);
-            nView.setUint16(pos + 10, r.offset);
-        });
-
-        const strArr = new Uint8Array(newNameBuf, 6 + (nameRecords.length * 12));
-        strArr.set(new Uint8Array(stringBytes));
-
-        const srcView = new DataView(buffer);
-        const numTables = srcView.getUint16(4);
-        let nameTableIdx = -1;
-
-        for (let i = 0; i < numTables; i++) {
-            const tag = String.fromCharCode(srcView.getUint8(12 + i*16), srcView.getUint8(13 + i*16), srcView.getUint8(14 + i*16), srcView.getUint8(15 + i*16));
-            if (tag === 'name') {
-                nameTableIdx = i;
-                break;
-            }
+        } catch (err) {
+            alert("Error saving font: " + err);
         }
 
-        if (nameTableIdx === -1) return buffer;
-
-        const origOffset = srcView.getUint32(20 + nameTableIdx * 16);
-        const origLen = srcView.getUint32(24 + nameTableIdx * 16);
-        const origPaddedLen = (origLen + 3) & ~3;
-        const delta = newNameSize - origPaddedLen;
-
-        const part1 = buffer.slice(0, origOffset);
-        const part2 = buffer.slice(origOffset + origLen);
-
-        const finalBuffer = new Uint8Array(part1.byteLength + newNameSize + part2.byteLength);
-        finalBuffer.set(new Uint8Array(part1), 0);
-        finalBuffer.set(new Uint8Array(newNameBuf), part1.byteLength);
-        finalBuffer.set(new Uint8Array(part2), part1.byteLength + newNameSize);
-
-        const fView = new DataView(finalBuffer.buffer);
-
-        for (let i = 0; i < numTables; i++) {
-            const entryHeaderPos = 12 + i * 16;
-            let currentOffset = srcView.getUint32(entryHeaderPos + 8);
-
-            if (i === nameTableIdx) {
-                fView.setUint32(entryHeaderPos + 12, newNameSize);
-                const checksum = calcTableChecksum(finalBuffer.buffer, currentOffset, newNameSize);
-                fView.setUint32(entryHeaderPos + 4, checksum);
-            } else if (currentOffset > origOffset) {
-                fView.setUint32(entryHeaderPos + 8, currentOffset + delta);
-            }
-        }
-
-        return finalBuffer.buffer;
+        downloadBtn.disabled = false;
+        downloadBtn.innerText = "Update Metadata & Download Font";
     }
 </script>
 
