@@ -7,21 +7,92 @@
     <!-- opentype.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding: 10px; }
-        .container { width: 100%; max-width: 800px; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); margin: 0 auto; }
-        h2 { color: #1a73e8; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; font-size: 1.3rem; }
-        .file-box { border: 2px dashed #1a73e8; padding: 20px; text-align: center; border-radius: 8px; background: #f8fafd; cursor: pointer; margin-bottom: 15px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 10px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+        }
+        h2 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+        .file-box {
+            border: 2px dashed #1a73e8;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            background: #f8fafd;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
         .file-box input { display: none; }
-        .file-box label { cursor: pointer; font-weight: bold; color: #1a73e8; font-size: 0.95rem; display: block; }
+        .file-box label { 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: #1a73e8;
+            font-size: 0.95rem;
+            display: block;
+        }
         .editor-section { display: none; }
         .form-group { margin-bottom: 12px; }
-        label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.85rem; color: #444; }
-        input[type="text"], textarea { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.9rem; outline: none; }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            color: #444;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            outline: none;
+        }
         textarea { resize: vertical; height: 60px; }
-        .preview-box { margin: 15px 0; padding: 12px; border: 1px solid #e0e0e0; background: #fafafa; border-radius: 5px; }
-        #fontPreviewText { font-size: 1.2rem; margin-top: 5px; word-break: break-all; }
-        .btn-download { width: 100%; padding: 12px; background: #28a745; color: #fff; border: none; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        .preview-box {
+            margin: 15px 0;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            border-radius: 5px;
+        }
+        #fontPreviewText {
+            font-size: 1.2rem;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        .btn-download {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
         .btn-download:hover { background: #218838; }
     </style>
 </head>
@@ -112,7 +183,7 @@
                 loadedFont = opentype.parse(e.target.result);
                 const names = loadedFont.names || {};
 
-                // ফিল্ডগুলোতে নাম সেট করা (আপডেটেড getLocalizedName ব্যবহার করে)
+                // নামের ডাটা ইনপুট ফিল্ডে সেট করা
                 document.getElementById('fontFamily').value = getLocalizedName(names.fontFamily);
                 document.getElementById('fontSubfamily').value = getLocalizedName(names.fontSubfamily, 'Regular');
                 document.getElementById('uniqueID').value = getLocalizedName(names.uniqueID);
@@ -126,14 +197,14 @@
 
                 document.getElementById('editorSection').style.display = 'block';
 
-                // লাইভ প্রিভিউ সেটআপ (নিরাপদ URL.createObjectURL ব্যবহার করে)
+                // লাইভ প্রিভিউ সেটআপ
                 const fontUrl = URL.createObjectURL(file);
                 const fontFace = new FontFace('customFontPreview', `url(${fontUrl})`);
                 fontFace.load().then(function(loaded) {
                     document.fonts.add(loaded);
                     document.getElementById('fontPreviewText').style.fontFamily = 'customFontPreview';
                 }).catch(function(err) {
-                    console.warn("ফন্ট প্রিভিউ লোড হতে সমস্যা:", err);
+                    console.warn("প্রিভিউ লোড হতে সমস্যা:", err);
                 });
 
             } catch (err) {
@@ -145,20 +216,32 @@
         reader.readAsArrayBuffer(file);
     }
 
-    // আপডেটেড: ডেটা সঠিকভাবে এক্সট্রাক্ট করার জন্য
+    // অলটারনেটিভ প্ল্যাটফর্ম ও ল্যাঙ্গুয়েজ কি (Key) হ্যান্ডেল করার জন্য আপডেট করা ফাংশন
     function getLocalizedName(obj, fallback = '') {
         if (!obj) return fallback;
-        if (typeof obj === 'string') return obj; // যদি অবজেক্ট না হয়ে সরাসরি স্ট্রিং থাকে
-        if (obj.en) return obj.en;               // ইংরেজি নাম থাকলে
+        if (typeof obj === 'string') return obj;
         
-        // অন্য কোনো ভাষার নাম (যেমন বাংলা) থাকলে তার প্রথম ভ্যালু নিবে
-        const values = Object.values(obj);
-        return values.length > 0 ? values[0] : fallback;
+        if (typeof obj === 'object') {
+            if (obj.en) return obj.en;
+            if (obj['en-US']) return obj['en-US'];
+            if (obj['en-GB']) return obj['en-GB'];
+            
+            const keys = Object.keys(obj);
+            if (keys.length > 0) {
+                const firstVal = obj[keys[0]];
+                if (typeof firstVal === 'string') return firstVal;
+                if (typeof firstVal === 'object' && firstVal !== null) {
+                    const innerValues = Object.values(firstVal);
+                    if (innerValues.length > 0) return innerValues[0];
+                }
+            }
+        }
+        return fallback;
     }
 
-    // আপডেটেড: ডেটা সঠিকভাবে সেভ করার জন্য
+    // মেটাডেটা সুরক্ষিতভাবে আপডেটের ফাংশন
     function setLocalizedName(obj, value) {
-        const val = value || ''; 
+        const val = value || '';
         if (typeof obj === 'object' && obj !== null) {
             obj.en = val;
             return obj;
@@ -169,6 +252,7 @@
     function saveAndDownload() {
         if (!loadedFont) return;
 
+        // ইনপুট অনুযায়ী মেটাডেটা অবজেক্ট আপডেট
         loadedFont.names.fontFamily = setLocalizedName(loadedFont.names.fontFamily, document.getElementById('fontFamily').value);
         loadedFont.names.fontSubfamily = setLocalizedName(loadedFont.names.fontSubfamily, document.getElementById('fontSubfamily').value);
         loadedFont.names.uniqueID = setLocalizedName(loadedFont.names.uniqueID, document.getElementById('uniqueID').value);
@@ -181,6 +265,7 @@
         loadedFont.names.license = setLocalizedName(loadedFont.names.license, document.getElementById('license').value);
 
         try {
+            // বাইনারি ফন্ট ফাইল তৈরি ও ডাউনলোড
             const arrayBuffer = loadedFont.toArrayBuffer();
             const blob = new Blob([arrayBuffer], { type: 'font/ttf' });
             const url = URL.createObjectURL(blob);
@@ -194,7 +279,7 @@
             
             setTimeout(() => URL.revokeObjectURL(url), 1000);
         } catch (e) {
-            alert("ফন্ট ফাইল সেভ করতে সমস্যা হয়েছে। ব্রাউজার কনসোল চেক করুন।");
+            alert("ফন্ট ফাইল সেভ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
             console.error(e);
         }
     }
