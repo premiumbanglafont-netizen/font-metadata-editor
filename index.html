@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universal Font Metadata Editor</title>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -33,16 +32,6 @@
             padding-bottom: 8px;
             text-align: center;
             font-size: 1.2rem;
-        }
-        .status-box {
-            background: #e8f0fe;
-            color: #1a73e8;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
         }
         .file-box {
             border: 2px dashed #1a73e8;
@@ -105,10 +94,6 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .btn-download:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
     </style>
 </head>
 <body>
@@ -116,9 +101,7 @@
 <div class="container">
     <h2>Font Metadata Editor Tool</h2>
 
-    <div class="status-box" id="statusText">⚙️ System Initializing (Engine Loading)...</div>
-
-    <div class="file-box" id="fileBox" style="display:none;" onclick="document.getElementById('fontFile').click()">
+    <div class="file-box" onclick="document.getElementById('fontFile').click()">
         <label for="fontFile">📁 Select Font File (.ttf, .otf)</label>
         <input accept=".ttf,.otf" id="fontFile" onchange="processFont(event)" type="file" />
     </div>
@@ -189,94 +172,122 @@
 </div>
 
 <script>
-    let pyodide = null;
+    let fontArrayBuffer = null;
     let originalFileName = "edited-font.ttf";
-    let rawFontData = null;
-
-    async function initPyodide() {
-        try {
-            pyodide = await loadPyodide();
-            await pyodide.loadPackage("micropip");
-            const micropip = pyodide.pyimport("micropip");
-            await micropip.install("fonttools");
-
-            document.getElementById('statusText').innerText = "✅ Ready! Select a font file.";
-            document.getElementById('statusText').style.color = "#28a745";
-            document.getElementById('fileBox').style.display = "block";
-        } catch (err) {
-            document.getElementById('statusText').innerText = "❌ Engine load failed. Please refresh.";
-            document.getElementById('statusText').style.color = "#dc3545";
-        }
-    }
-
-    initPyodide();
+    let nameTableOffset = 0;
+    let nameTableLength = 0;
+    let parsedRecords = [];
 
     function processFont(event) {
         const file = event.target.files[0];
-        if (!file || !pyodide) return;
+        if (!file) return;
 
         originalFileName = file.name;
         const reader = new FileReader();
 
-        reader.onload = async function(e) {
-            rawFontData = new Uint8Array(e.target.result);
-            pyodide.FS.writeFile("input_font.ttf", rawFontData);
+        reader.onload = function(e) {
+            fontArrayBuffer = e.target.result;
+            parseTTF(fontArrayBuffer);
 
-            const pyCode = `
-from fontTools.ttLib import TTFont
-
-font = TTFont("input_font.ttf", lazy=True)
-name_table = font.get('name')
-
-metadata = {}
-if name_table:
-    for record in name_table.names:
-        try:
-            metadata[record.nameID] = record.toUnicode()
-        except:
-            pass
-
-metadata
-`;
-            try {
-                const metadataMap = await pyodide.runPythonAsync(pyCode);
-                const metadata = metadataMap.toJs();
-
-                document.getElementById('copyright').value = metadata.get(0) || '';
-                document.getElementById('fontFamily').value = metadata.get(1) || '';
-                document.getElementById('fontSubfamily').value = metadata.get(2) || 'Regular';
-                document.getElementById('uniqueID').value = metadata.get(3) || '';
-                document.getElementById('fullName').value = metadata.get(4) || '';
-                document.getElementById('version').value = metadata.get(5) || 'Version 1.00';
-                document.getElementById('postScriptName').value = metadata.get(6) || '';
-                document.getElementById('manufacturer').value = metadata.get(8) || '';
-                document.getElementById('designer').value = metadata.get(9) || '';
-                document.getElementById('description').value = metadata.get(10) || '';
-                document.getElementById('license').value = metadata.get(13) || '';
-
-                document.getElementById('editorSection').style.display = 'block';
-
-                const blob = new Blob([rawFontData], { type: 'font/ttf' });
-                const fontUrl = URL.createObjectURL(blob);
-                const fontFace = new FontFace('customFontPreview', `url(${fontUrl})`);
-                await fontFace.load();
-                document.fonts.add(fontFace);
+            // Font Preview Setup
+            const blob = new Blob([fontArrayBuffer], { type: 'font/ttf' });
+            const fontUrl = URL.createObjectURL(blob);
+            const fontFace = new FontFace('customFontPreview', `url(${fontUrl})`);
+            fontFace.load().then(loadedFace => {
+                document.fonts.add(loadedFace);
                 document.getElementById('fontPreviewText').style.fontFamily = 'customFontPreview';
+            }).catch(() => {});
 
-            } catch (err) {
-                alert("Error reading font: " + err);
-            }
+            document.getElementById('editorSection').style.display = 'block';
         };
 
         reader.readAsArrayBuffer(file);
     }
 
-    async function saveAndDownload() {
-        const downloadBtn = document.getElementById('downloadBtn');
-        downloadBtn.disabled = true;
-        downloadBtn.innerText = "Processing Font...";
+    function parseTTF(buffer) {
+        const data = new DataView(buffer);
+        const numTables = data.getUint16(4);
+        
+        nameTableOffset = 0;
+        nameTableLength = 0;
 
-        const inputs = {
+        for (let i = 0; i < numTables; i++) {
+            const tableOffset = 12 + i * 16;
+            const tag = String.fromCharCode(
+                data.getUint8(tableOffset),
+                data.getUint8(tableOffset + 1),
+                data.getUint8(tableOffset + 2),
+                data.getUint8(tableOffset + 3)
+            );
+
+            if (tag === 'name') {
+                nameTableOffset = data.getUint32(tableOffset + 8);
+                nameTableLength = data.getUint32(tableOffset + 12);
+                break;
+            }
+        }
+
+        if (!nameTableOffset) {
+            alert('Name table not found in font!');
+            return;
+        }
+
+        const count = data.getUint16(nameTableOffset + 2);
+        const stringOffset = data.getUint16(nameTableOffset + 4);
+
+        const metadata = {};
+        parsedRecords = [];
+
+        for (let i = 0; i < count; i++) {
+            const recOffset = nameTableOffset + 6 + i * 12;
+            const platformID = data.getUint16(recOffset);
+            const encodingID = data.getUint16(recOffset + 2);
+            const languageID = data.getUint16(recOffset + 4);
+            const nameID = data.getUint16(recOffset + 6);
+            const length = data.getUint16(recOffset + 8);
+            const offset = data.getUint16(recOffset + 10);
+
+            const strAbsOffset = nameTableOffset + stringOffset + offset;
+            let strVal = "";
+
+            try {
+                if (platformID === 3 || platformID === 0) { // UTF-16BE
+                    let chars = [];
+                    for (let j = 0; j < length; j += 2) {
+                        chars.push(data.getUint16(strAbsOffset + j));
+                    }
+                    strVal = String.fromCharCode(...chars);
+                } else { // ASCII / Latin
+                    let chars = [];
+                    for (let j = 0; j < length; j++) {
+                        chars.push(data.getUint8(strAbsOffset + j));
+                    }
+                    strVal = String.fromCharCode(...chars);
+                }
+            } catch(e){}
+
+            parsedRecords.push({ platformID, encodingID, languageID, nameID, length, offset });
+
+            if (!metadata[nameID] || platformID === 3) {
+                metadata[nameID] = strVal;
+            }
+        }
+
+        document.getElementById('copyright').value = metadata[0] || '';
+        document.getElementById('fontFamily').value = metadata[1] || '';
+        document.getElementById('fontSubfamily').value = metadata[2] || 'Regular';
+        document.getElementById('uniqueID').value = metadata[3] || '';
+        document.getElementById('fullName').value = metadata[4] || '';
+        document.getElementById('version').value = metadata[5] || 'Version 1.00';
+        document.getElementById('postScriptName').value = metadata[6] || '';
+        document.getElementById('manufacturer').value = metadata[8] || '';
+        document.getElementById('designer').value = metadata[9] || '';
+        document.getElementById('description').value = metadata[10] || '';
+        document.getElementById('license').value = metadata[13] || '';
+    }
+
+    function saveAndDownload() {
+        const fieldMapping = {
             0: document.getElementById('copyright').value,
             1: document.getElementById('fontFamily').value,
             2: document.getElementById('fontSubfamily').value,
@@ -290,43 +301,138 @@ metadata
             13: document.getElementById('license').value
         };
 
-        pyodide.globals.set("user_inputs", inputs);
+        const srcData = new DataView(fontArrayBuffer);
+        const count = srcData.getUint16(nameTableOffset + 2);
 
-        const pyCode = `
-from fontTools.ttLib import TTFont
+        // Build new string storage area
+        let stringBytes = [];
+        let newRecords = [];
 
-font = TTFont("input_font.ttf", lazy=True)
-name_table = font.get('name')
+        for (let i = 0; i < count; i++) {
+            const recOffset = nameTableOffset + 6 + i * 12;
+            const platformID = srcData.getUint16(recOffset);
+            const encodingID = srcData.getUint16(recOffset + 2);
+            const languageID = srcData.getUint16(recOffset + 4);
+            const nameID = srcData.getUint16(recOffset + 6);
 
-if name_table:
-    for name_id, val in user_inputs.items():
-        if val is not None and str(val).strip() != "":
-            name_table.setName(str(val), int(name_id), 3, 1, 0x0409)
-            name_table.setName(str(val), int(name_id), 1, 0, 0)
+            let val = fieldMapping[nameID];
+            if (val === undefined) {
+                // Keep original string bytes if not in mapping
+                const origLen = srcData.getUint16(recOffset + 8);
+                const origOff = srcData.getUint16(recOffset + 10);
+                const stringStorageStart = nameTableOffset + srcData.getUint16(nameTableOffset + 4);
+                
+                const currentOffset = stringBytes.length;
+                for (let k = 0; k < origLen; k++) {
+                    stringBytes.push(srcData.getUint8(stringStorageStart + origOff + k));
+                }
+                newRecords.push({ platformID, encodingID, languageID, nameID, length: origLen, offset: currentOffset });
+            } else {
+                let encoded = [];
+                if (platformID === 3 || platformID === 0) { // UTF-16BE
+                    for (let c = 0; c < val.length; c++) {
+                        const code = val.charCodeAt(c);
+                        encoded.push((code >> 8) & 0xFF);
+                        encoded.push(code & 0xFF);
+                    }
+                } else { // ASCII
+                    for (let c = 0; c < val.length; c++) {
+                        encoded.push(val.charCodeAt(c) & 0xFF);
+                    }
+                }
 
-font.save("output_font.ttf", reorderTables=False)
-`;
-
-        try {
-            await pyodide.runPythonAsync(pyCode);
-            const outputBytes = pyodide.FS.readFile("output_font.ttf");
-
-            const blob = new Blob([outputBytes], { type: 'font/ttf' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = originalFileName || 'edited-font.ttf';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-        } catch (err) {
-            alert("Error saving font: " + err);
+                const currentOffset = stringBytes.length;
+                stringBytes.push(...encoded);
+                newRecords.push({ platformID, encodingID, languageID, nameID, length: encoded.length, offset: currentOffset });
+            }
         }
 
-        downloadBtn.disabled = false;
-        downloadBtn.innerText = "Update Metadata & Download Font";
+        const nameHeaderSize = 6 + (count * 12);
+        const newNameTableSize = nameHeaderSize + stringBytes.length;
+
+        // Clone current font array buffer
+        const newFontBytes = new Uint8Array(fontArrayBuffer.slice(0));
+        const outView = new DataView(newFontBytes.buffer);
+
+        // Check if new string storage fits inside existing name table allocation
+        if (newNameTableSize <= nameTableLength) {
+            // Write updated name header and string pool in-place
+            outView.setUint16(nameTableOffset + 4, nameHeaderSize);
+
+            for (let i = 0; i < count; i++) {
+                const rec = newRecords[i];
+                const recOffset = nameTableOffset + 6 + i * 12;
+                outView.setUint16(recOffset + 8, rec.length);
+                outView.setUint16(recOffset + 10, rec.offset);
+            }
+
+            const stringPoolStart = nameTableOffset + nameHeaderSize;
+            for (let i = 0; i < stringBytes.length; i++) {
+                outView.setUint8(stringPoolStart + i, stringBytes[i]);
+            }
+
+            downloadBlob(newFontBytes);
+        } else {
+            // If string grows bigger, append new table safely at file end
+            const oldLength = fontArrayBuffer.byteLength;
+            const expandedBuffer = new Uint8Array(oldLength + newNameTableSize);
+            expandedBuffer.set(new Uint8Array(fontArrayBuffer), 0);
+            
+            const expView = new DataView(expandedBuffer.buffer);
+            const newTableOffset = oldLength;
+
+            // Header info
+            expView.setUint16(newTableOffset, 0);
+            expView.setUint16(newTableOffset + 2, count);
+            expView.setUint16(newTableOffset + 4, nameHeaderSize);
+
+            for (let i = 0; i < count; i++) {
+                const rec = newRecords[i];
+                const recOffset = newTableOffset + 6 + i * 12;
+                expView.setUint16(recOffset, rec.platformID);
+                expView.setUint16(recOffset + 2, rec.encodingID);
+                expView.setUint16(recOffset + 4, rec.languageID);
+                expView.setUint16(recOffset + 6, rec.nameID);
+                expView.setUint16(recOffset + 8, rec.length);
+                expView.setUint16(recOffset + 10, rec.offset);
+            }
+
+            for (let i = 0; i < stringBytes.length; i++) {
+                expView.setUint8(newTableOffset + nameHeaderSize + i, stringBytes[i]);
+            }
+
+            // Update Table Directory Offset & Length
+            const numTables = expView.getUint16(4);
+            for (let i = 0; i < numTables; i++) {
+                const tableOffset = 12 + i * 16;
+                const tag = String.fromCharCode(
+                    expView.getUint8(tableOffset),
+                    expView.getUint8(tableOffset + 1),
+                    expView.getUint8(tableOffset + 2),
+                    expView.getUint8(tableOffset + 3)
+                );
+
+                if (tag === 'name') {
+                    expView.setUint32(tableOffset + 8, newTableOffset);
+                    expView.setUint32(tableOffset + 12, newNameTableSize);
+                    break;
+                }
+            }
+
+            downloadBlob(expandedBuffer);
+        }
+    }
+
+    function downloadBlob(uint8Array) {
+        const blob = new Blob([uint8Array], { type: 'font/ttf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = originalFileName || 'edited-font.ttf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 </script>
 
