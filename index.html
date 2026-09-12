@@ -8,26 +8,17 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Font Metadata Editor Tool</title>
+    <title>Font Metadata Editor</title>
 
-    <!-- OpenType.js -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.1/dist/opentype.min.js">
-    </script>
+    <!-- OpenType.js শুধু Font Metadata Read করার জন্য -->
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.1/dist/opentype.min.js"></script>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Helvetica,
-                Arial,
-                sans-serif;
         }
 
         body {
@@ -35,21 +26,24 @@
             background: #f4f6f9;
             color: #333;
             padding: 20px;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
         }
 
         .container {
             width: 100%;
             max-width: 850px;
-            margin: 0 auto;
-            background: #ffffff;
+            margin: auto;
+            background: #fff;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
         }
-
-        /* =========================
-           HEADER
-        ========================= */
 
         .header {
             text-align: center;
@@ -58,18 +52,16 @@
 
         .header h1 {
             color: #1a73e8;
-            font-size: 28px;
-            margin-bottom: 8px;
+            font-size: 27px;
+            margin-bottom: 7px;
         }
 
         .header p {
-            color: #666;
+            color: #777;
             font-size: 14px;
         }
 
-        /* =========================
-           FILE UPLOAD
-        ========================= */
+        /* Upload */
 
         .file-box {
             border: 2px dashed #1a73e8;
@@ -78,17 +70,12 @@
             border-radius: 10px;
             background: #f8fafd;
             cursor: pointer;
-            margin-bottom: 20px;
-            transition: 0.25s ease;
+            transition: .2s;
         }
 
-        .file-box:hover {
-            background: #eef5ff;
-            border-color: #0b57d0;
-        }
-
+        .file-box:hover,
         .file-box.dragover {
-            background: #e8f1ff;
+            background: #eef5ff;
             border-color: #0b57d0;
         }
 
@@ -98,56 +85,48 @@
         }
 
         .file-box label {
-            cursor: pointer;
-            font-weight: 700;
+            display: block;
             color: #1a73e8;
             font-size: 16px;
-            display: block;
+            font-weight: 700;
+            cursor: pointer;
         }
 
         .file-box small {
             display: block;
-            margin-top: 8px;
             color: #777;
-            font-size: 13px;
+            margin-top: 8px;
         }
 
-        .file-box input {
+        #fontFile {
             display: none;
         }
 
-        /* =========================
-           FILE INFORMATION
-        ========================= */
+        /* File Info */
 
         .file-info {
             display: none;
-            background: #f5f7fa;
-            border: 1px solid #e1e5ea;
+            margin-top: 15px;
             padding: 12px 15px;
+            background: #f5f7fa;
+            border: 1px solid #e0e4e8;
             border-radius: 7px;
-            margin-bottom: 20px;
+            font-size: 14px;
         }
 
-        .file-info strong {
-            color: #222;
-        }
-
-        /* =========================
-           EDITOR
-        ========================= */
+        /* Editor */
 
         .editor-section {
             display: none;
+            margin-top: 25px;
         }
 
         .section-title {
             font-size: 19px;
             font-weight: 700;
-            color: #222;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #eeeeee;
+            padding-bottom: 10px;
+            margin-bottom: 18px;
+            border-bottom: 2px solid #eee;
         }
 
         .form-group {
@@ -156,92 +135,84 @@
 
         .form-group label {
             display: block;
+            font-size: 14px;
             font-weight: 600;
             margin-bottom: 6px;
-            font-size: 14px;
             color: #444;
         }
 
         input[type="text"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #cfd4da;
+            border: 1px solid #ccc;
             border-radius: 6px;
-            font-size: 14px;
             outline: none;
             background: #fff;
-            transition: 0.2s ease;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        select {
+            height: 42px;
+            padding: 0 12px;
+        }
+
+        textarea {
+            min-height: 85px;
+            padding: 10px 12px;
+            resize: vertical;
         }
 
         input[type="text"]:focus,
-        textarea:focus {
+        textarea:focus,
+        select:focus {
             border-color: #1a73e8;
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.10);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, .1);
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 85px;
-            line-height: 1.5;
-        }
-
-        /* =========================
-           PREVIEW
-        ========================= */
+        /* Preview */
 
         .preview-box {
-            margin: 25px 0;
+            margin-top: 25px;
             padding: 18px;
-            border: 1px solid #e0e0e0;
             background: #fafafa;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
         }
 
-        .preview-label {
+        .preview-title {
             font-weight: 700;
-            color: #333;
             margin-bottom: 10px;
         }
-
-        #fontPreviewText {
-            min-height: 100px;
-            padding: 18px;
-            background: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 28px;
-            line-height: 1.6;
-            word-break: break-word;
-        }
-
-        /* =========================
-           PREVIEW CONTROLS
-        ========================= */
 
         .preview-controls {
             display: flex;
             gap: 10px;
             margin-bottom: 12px;
-            flex-wrap: wrap;
         }
 
         .preview-controls input {
             flex: 1;
-            min-width: 180px;
         }
 
         .preview-controls select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background: #fff;
-            outline: none;
+            width: 100px;
         }
 
-        /* =========================
-           BUTTONS
-        ========================= */
+        #fontPreviewText {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 18px;
+            min-height: 110px;
+            font-size: 28px;
+            line-height: 1.6;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        /* Buttons */
 
         .button-group {
             display: flex;
@@ -250,13 +221,22 @@
         }
 
         button {
-            border: none;
+            border: 0;
             border-radius: 6px;
-            padding: 12px 18px;
+            padding: 13px 18px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.2s ease;
+            transition: .2s;
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
         }
 
         .btn-download {
@@ -269,23 +249,17 @@
             background: #218838;
         }
 
-        .btn-reset {
-            background: #6c757d;
-            color: #fff;
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
         }
 
-        .btn-reset:hover {
-            background: #5a6268;
-        }
-
-        /* =========================
-           STATUS
-        ========================= */
+        /* Status */
 
         .status {
             display: none;
-            padding: 12px 15px;
             margin-top: 15px;
+            padding: 12px 15px;
             border-radius: 6px;
             font-size: 14px;
             line-height: 1.5;
@@ -293,41 +267,33 @@
 
         .status.success {
             display: block;
+            color: #176b2c;
             background: #eaf7ee;
-            color: #1e7e34;
             border: 1px solid #b8e6c4;
         }
 
         .status.error {
             display: block;
+            color: #b4232f;
             background: #fdecec;
-            color: #b02a37;
             border: 1px solid #f3b8be;
         }
 
         .status.info {
             display: block;
-            background: #eef5ff;
             color: #1558a6;
+            background: #eef5ff;
             border: 1px solid #b9d4f5;
         }
 
-        /* =========================
-           FOOTER
-        ========================= */
-
         .footer {
-            text-align: center;
             margin-top: 25px;
+            text-align: center;
             color: #888;
             font-size: 12px;
         }
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 600px) {
+        @media(max-width:600px) {
 
             body {
                 padding: 10px;
@@ -335,26 +301,29 @@
 
             .container {
                 padding: 18px;
-                border-radius: 8px;
             }
 
             .header h1 {
                 font-size: 23px;
             }
 
-            .button-group {
+            .preview-controls {
                 flex-direction: column;
             }
 
-            .btn-reset,
-            .btn-download {
+            .preview-controls select {
                 width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
             }
 
             #fontPreviewText {
                 font-size: 22px;
             }
         }
+
     </style>
 </head>
 
@@ -362,16 +331,12 @@
 
 <div class="container">
 
-    <!-- =========================
-         HEADER
-    ========================= -->
-
     <div class="header">
 
         <h1>Font Metadata Editor</h1>
 
         <p>
-            TTF / OTF ফন্টের Metadata Edit করুন এবং Updated Font Download করুন
+            TTF / OTF Font Metadata Editor
         </p>
 
     </div>
@@ -379,29 +344,29 @@
 
     <!-- =========================
          FILE UPLOAD
-    ========================= -->
+    ========================== -->
 
     <div
         class="file-box"
         id="dropZone"
-        onclick="document.getElementById('fontFile').click()"
     >
 
-        <div class="file-icon">📁</div>
+        <div class="file-icon">
+            📁
+        </div>
 
         <label for="fontFile">
             Select Font File
         </label>
 
         <small>
-            Supported formats: .TTF এবং .OTF
+            TTF / OTF ফাইল এখানে Select অথবা Drag & Drop করুন
         </small>
 
         <input
             type="file"
             id="fontFile"
-            accept=".ttf,.otf,font/ttf,font/otf"
-            onchange="processFont(event)"
+            accept=".ttf,.otf"
         >
 
     </div>
@@ -409,18 +374,21 @@
 
     <!-- =========================
          FILE INFO
-    ========================= -->
+    ========================== -->
 
-    <div class="file-info" id="fileInfo">
+    <div
+        class="file-info"
+        id="fileInfo"
+    >
 
         <div>
-            <strong>Selected File:</strong>
-            <span id="selectedFileName"></span>
+            <strong>File:</strong>
+            <span id="fileName"></span>
         </div>
 
         <div style="margin-top:5px;">
-            <strong>File Size:</strong>
-            <span id="selectedFileSize"></span>
+            <strong>Size:</strong>
+            <span id="fileSize"></span>
         </div>
 
     </div>
@@ -428,7 +396,7 @@
 
     <!-- =========================
          EDITOR
-    ========================= -->
+    ========================== -->
 
     <div
         class="editor-section"
@@ -440,185 +408,152 @@
         </div>
 
 
-        <!-- Font Family -->
-
         <div class="form-group">
 
-            <label for="fontFamily">
+            <label>
                 Font Family Name | ফন্ট পরিবারের নাম
             </label>
 
             <input
                 type="text"
                 id="fontFamily"
-                placeholder="Example: Noto Sans Bengali"
             >
 
         </div>
 
 
-        <!-- Subfamily -->
-
         <div class="form-group">
 
-            <label for="fontSubfamily">
+            <label>
                 Font Subfamily / Style | ফন্ট স্টাইল
             </label>
 
             <input
                 type="text"
                 id="fontSubfamily"
-                placeholder="Example: Regular"
             >
 
         </div>
 
 
-        <!-- Unique ID -->
-
         <div class="form-group">
 
-            <label for="uniqueID">
+            <label>
                 Unique Font Identifier | ফন্ট আইডেন্টিফায়ার
             </label>
 
             <input
                 type="text"
                 id="uniqueID"
-                placeholder="Unique font identifier"
             >
 
         </div>
 
 
-        <!-- Full Name -->
-
         <div class="form-group">
 
-            <label for="fullName">
+            <label>
                 Full Font Name | সম্পূর্ণ ফন্টের নাম
             </label>
 
             <input
                 type="text"
                 id="fullName"
-                placeholder="Full font name"
             >
 
         </div>
 
 
-        <!-- Version -->
-
         <div class="form-group">
 
-            <label for="version">
+            <label>
                 Version String | ভার্সন
             </label>
 
             <input
                 type="text"
                 id="version"
-                placeholder="Version 1.00"
             >
 
         </div>
 
 
-        <!-- PostScript -->
-
         <div class="form-group">
 
-            <label for="postScriptName">
+            <label>
                 PostScript Name | পোস্টস্ক্রিপ্ট নাম
             </label>
 
             <input
                 type="text"
                 id="postScriptName"
-                placeholder="PostScript name"
             >
 
         </div>
 
 
-        <!-- Manufacturer -->
-
         <div class="form-group">
 
-            <label for="manufacturer">
+            <label>
                 Manufacturer / Publisher | প্রকাশক
             </label>
 
             <input
                 type="text"
                 id="manufacturer"
-                placeholder="Manufacturer / Publisher"
             >
 
         </div>
 
 
-        <!-- Designer -->
-
         <div class="form-group">
 
-            <label for="designer">
+            <label>
                 Designer / Author | ডিজাইনার
             </label>
 
             <input
                 type="text"
                 id="designer"
-                placeholder="Designer / Author"
             >
 
         </div>
 
 
-        <!-- Copyright -->
-
         <div class="form-group">
 
-            <label for="copyright">
+            <label>
                 Copyright Notice | কপিরাইট নোট
             </label>
 
             <input
                 type="text"
                 id="copyright"
-                placeholder="Copyright information"
             >
 
         </div>
 
 
-        <!-- License -->
-
         <div class="form-group">
 
-            <label for="license">
+            <label>
                 License Description | লাইসেন্সের বিবরণ
             </label>
 
-            <textarea
-                id="license"
-                placeholder="License information"
-            ></textarea>
+            <textarea id="license"></textarea>
 
         </div>
 
 
         <!-- =========================
-             LIVE PREVIEW
-        ========================= -->
+             PREVIEW
+        ========================== -->
 
         <div class="preview-box">
 
-            <div class="preview-label">
+            <div class="preview-title">
                 Live Font Preview | ফন্ট প্রিভিউ
             </div>
-
 
             <div class="preview-controls">
 
@@ -626,14 +561,9 @@
                     type="text"
                     id="previewInput"
                     value="Abc 123 - আমাদের দেশ আমার বাংলাদেশ। ঞ্চ ঞ্ছ ঞ্জ জ্ঞ ক্ষ হ্ম"
-                    oninput="updatePreview()"
                 >
 
-
-                <select
-                    id="previewSize"
-                    onchange="updatePreview()"
-                >
+                <select id="previewSize">
 
                     <option value="18">18px</option>
                     <option value="22">22px</option>
@@ -646,7 +576,6 @@
 
             </div>
 
-
             <div id="fontPreviewText">
                 Abc 123 - আমাদের দেশ আমার বাংলাদেশ। ঞ্চ ঞ্ছ ঞ্জ জ্ঞ ক্ষ হ্ম
             </div>
@@ -656,30 +585,28 @@
 
         <!-- =========================
              BUTTONS
-        ========================= -->
+        ========================== -->
 
         <div class="button-group">
 
             <button
-                class="btn-reset"
                 type="button"
-                onclick="resetMetadata()"
+                class="btn-reset"
+                id="resetButton"
             >
                 ↻ Reset
             </button>
 
             <button
-                class="btn-download"
                 type="button"
-                onclick="saveAndDownload()"
+                class="btn-download"
+                id="downloadButton"
             >
                 ⬇ Update Metadata & Download Font
             </button>
 
         </div>
 
-
-        <!-- STATUS -->
 
         <div
             class="status"
@@ -690,7 +617,7 @@
 
 
     <div class="footer">
-        Font Metadata Editor • Runs locally in your browser
+        Font Metadata Editor • Browser Based Tool
     </div>
 
 </div>
@@ -698,439 +625,661 @@
 
 <script>
 
-    /* =========================================================
-       GLOBAL VARIABLES
-    ========================================================= */
+/* ============================================================
+   GLOBAL VARIABLES
+============================================================ */
 
-    let loadedFont = null;
+let originalFontBuffer = null;
 
-    let originalFileName = "edited-font.ttf";
+let loadedFont = null;
 
-    let originalMetadata = {};
+let originalFileName = "font.ttf";
+
+let originalMetadata = {};
 
 
-    /* =========================================================
-       ELEMENT HELPERS
-    ========================================================= */
+/* ============================================================
+   ELEMENTS
+============================================================ */
 
-    function getElement(id) {
-        return document.getElementById(id);
+const fontFile =
+    document.getElementById("fontFile");
+
+const dropZone =
+    document.getElementById("dropZone");
+
+const editorSection =
+    document.getElementById("editorSection");
+
+const fileInfo =
+    document.getElementById("fileInfo");
+
+const statusMessage =
+    document.getElementById("statusMessage");
+
+
+/* ============================================================
+   UTILITY
+============================================================ */
+
+function getValue(id) {
+
+    const el = document.getElementById(id);
+
+    return el ? el.value.trim() : "";
+
+}
+
+
+function setValue(id, value) {
+
+    const el = document.getElementById(id);
+
+    if (el) {
+        el.value = value || "";
     }
 
+}
 
-    /* =========================================================
-       FILE SIZE FORMAT
-    ========================================================= */
 
-    function formatFileSize(bytes) {
+function showStatus(message, type) {
 
-        if (bytes === 0) {
-            return "0 Bytes";
-        }
+    statusMessage.className =
+        "status " + type;
 
-        const units = [
-            "Bytes",
-            "KB",
-            "MB",
-            "GB"
-        ];
+    statusMessage.textContent =
+        message;
 
-        const i = Math.floor(
-            Math.log(bytes) / Math.log(1024)
-        );
+}
 
-        return (
-            (bytes / Math.pow(1024, i)).toFixed(2)
-            + " "
-            + units[i]
-        );
+
+function formatFileSize(bytes) {
+
+    if (bytes < 1024) {
+        return bytes + " Bytes";
     }
 
-
-    /* =========================================================
-       SHOW STATUS
-    ========================================================= */
-
-    function showStatus(message, type = "info") {
-
-        const status = getElement("statusMessage");
-
-        status.className = "status " + type;
-
-        status.textContent = message;
+    if (bytes < 1024 * 1024) {
+        return (bytes / 1024).toFixed(2) + " KB";
     }
 
+    return (
+        bytes / (1024 * 1024)
+    ).toFixed(2) + " MB";
 
-    /* =========================================================
-       GET LOCALIZED FONT NAME
-    ========================================================= */
+}
 
-    function getLocalizedName(obj) {
 
-        if (!obj) {
-            return "";
-        }
+/* ============================================================
+   READ LOCALIZED NAME
+============================================================ */
 
-        if (typeof obj === "string") {
-            return obj;
-        }
+function getLocalizedName(obj) {
 
-        if (obj.en) {
-            return obj.en;
-        }
-
-        const keys = Object.keys(obj);
-
-        if (keys.length > 0) {
-            return obj[keys[0]];
-        }
-
+    if (!obj) {
         return "";
     }
 
+    if (typeof obj === "string") {
+        return obj;
+    }
 
-    /* =========================================================
-       CREATE NAME TABLE ENTRY
-    ========================================================= */
+    if (obj.en) {
+        return obj.en;
+    }
 
-    function createNameTableEntry(value) {
+    const keys =
+        Object.keys(obj);
 
-        return {
-            en: value || ""
-        };
+    if (keys.length > 0) {
+        return obj[keys[0]];
+    }
 
+    return "";
+
+}
+
+
+/* ============================================================
+   PROCESS FONT
+============================================================ */
+
+function processFont(file) {
+
+    if (!file) {
+        return;
     }
 
 
-    /* =========================================================
-       SET INPUT VALUE
-    ========================================================= */
-
-    function setValue(id, value) {
-
-        const element = getElement(id);
-
-        if (element) {
-            element.value = value || "";
-        }
-
-    }
+    const name =
+        file.name.toLowerCase();
 
 
-    /* =========================================================
-       GET INPUT VALUE
-    ========================================================= */
-
-    function getValue(id) {
-
-        const element = getElement(id);
-
-        if (!element) {
-            return "";
-        }
-
-        return element.value.trim();
-    }
-
-
-    /* =========================================================
-       LOAD FONT
-    ========================================================= */
-
-    function processFont(event) {
-
-        const file = event.target.files[0];
-
-        if (!file) {
-            return;
-        }
-
-
-        /* Validate extension */
-
-        const fileName = file.name.toLowerCase();
-
-        const validExtension =
-            fileName.endsWith(".ttf") ||
-            fileName.endsWith(".otf");
-
-        if (!validExtension) {
-
-            showStatus(
-                "দয়া করে একটি valid TTF অথবা OTF font file নির্বাচন করুন।",
-                "error"
-            );
-
-            return;
-        }
-
-
-        originalFileName = file.name;
-
-
-        /* Show file information */
-
-        getElement("fileInfo").style.display = "block";
-
-        getElement("selectedFileName").textContent =
-            file.name;
-
-        getElement("selectedFileSize").textContent =
-            formatFileSize(file.size);
-
+    if (
+        !name.endsWith(".ttf") &&
+        !name.endsWith(".otf")
+    ) {
 
         showStatus(
-            "Font file পড়া হচ্ছে...",
-            "info"
+            "শুধু TTF অথবা OTF Font File ব্যবহার করুন।",
+            "error"
         );
 
-
-        /* File Reader */
-
-        const reader = new FileReader();
-
-
-        reader.onload = function (e) {
-
-            try {
-
-                /* Parse font */
-
-                loadedFont =
-                    opentype.parse(e.target.result);
-
-
-                if (!loadedFont) {
-
-                    throw new Error(
-                        "Font parsing failed"
-                    );
-
-                }
-
-
-                /* Read metadata */
-
-                const names = loadedFont.names;
-
-
-                originalMetadata = {
-
-                    fontFamily:
-                        getLocalizedName(
-                            names.fontFamily
-                        ),
-
-                    fontSubfamily:
-                        getLocalizedName(
-                            names.fontSubfamily
-                        ),
-
-                    uniqueID:
-                        getLocalizedName(
-                            names.uniqueID
-                        ),
-
-                    fullName:
-                        getLocalizedName(
-                            names.fullName
-                        ),
-
-                    version:
-                        getLocalizedName(
-                            names.version
-                        ),
-
-                    postScriptName:
-                        getLocalizedName(
-                            names.postScriptName
-                        ),
-
-                    manufacturer:
-                        getLocalizedName(
-                            names.manufacturer
-                        ),
-
-                    designer:
-                        getLocalizedName(
-                            names.designer
-                        ),
-
-                    copyright:
-                        getLocalizedName(
-                            names.copyright
-                        ),
-
-                    license:
-                        getLocalizedName(
-                            names.license
-                        )
-
-                };
-
-
-                /* Fill form */
-
-                setValue(
-                    "fontFamily",
-                    originalMetadata.fontFamily
-                );
-
-                setValue(
-                    "fontSubfamily",
-                    originalMetadata.fontSubfamily || "Regular"
-                );
-
-                setValue(
-                    "uniqueID",
-                    originalMetadata.uniqueID
-                );
-
-                setValue(
-                    "fullName",
-                    originalMetadata.fullName
-                );
-
-                setValue(
-                    "version",
-                    originalMetadata.version || "Version 1.00"
-                );
-
-                setValue(
-                    "postScriptName",
-                    originalMetadata.postScriptName
-                );
-
-                setValue(
-                    "manufacturer",
-                    originalMetadata.manufacturer
-                );
-
-                setValue(
-                    "designer",
-                    originalMetadata.designer
-                );
-
-                setValue(
-                    "copyright",
-                    originalMetadata.copyright
-                );
-
-                setValue(
-                    "license",
-                    originalMetadata.license
-                );
-
-
-                /* Show editor */
-
-                getElement(
-                    "editorSection"
-                ).style.display = "block";
-
-
-                /* Load font preview */
-
-                loadFontPreview(
-                    e.target.result
-                );
-
-
-                showStatus(
-                    "Font successfully loaded. এখন Metadata edit করতে পারবেন।",
-                    "success"
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Font parsing error:",
-                    error
-                );
-
-
-                loadedFont = null;
-
-
-                getElement(
-                    "editorSection"
-                ).style.display = "none";
-
-
-                showStatus(
-                    "Font file পড়তে সমস্যা হয়েছে। একটি valid TTF বা OTF file ব্যবহার করুন।",
-                    "error"
-                );
-
-            }
-
-        };
-
-
-        reader.onerror = function () {
-
-            showStatus(
-                "Font file read করা সম্ভব হয়নি।",
-                "error"
-            );
-
-        };
-
-
-        reader.readAsArrayBuffer(file);
-
+        return;
     }
 
 
-    /* =========================================================
-       LOAD FONT PREVIEW
-    ========================================================= */
+    originalFileName =
+        file.name;
 
-    function loadFontPreview(arrayBuffer) {
+
+    fileInfo.style.display =
+        "block";
+
+
+    document.getElementById(
+        "fileName"
+    ).textContent =
+        file.name;
+
+
+    document.getElementById(
+        "fileSize"
+    ).textContent =
+        formatFileSize(file.size);
+
+
+    showStatus(
+        "Font file read করা হচ্ছে...",
+        "info"
+    );
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(event) {
 
         try {
 
-            const fontFace = new FontFace(
-                "customFontPreview",
+            /*
+             * Original binary copy
+             *
+             * এই buffer কখনো opentype.js
+             * দিয়ে rebuild করা হবে না।
+             */
+
+            originalFontBuffer =
+                event.target.result.slice(0);
+
+
+            /*
+             * Metadata reading
+             */
+
+            loadedFont =
+                opentype.parse(
+                    originalFontBuffer.slice(0)
+                );
+
+
+            if (!loadedFont) {
+                throw new Error(
+                    "Unable to parse font"
+                );
+            }
+
+
+            const names =
+                loadedFont.names;
+
+
+            originalMetadata = {
+
+                fontFamily:
+                    getLocalizedName(
+                        names.fontFamily
+                    ),
+
+                fontSubfamily:
+                    getLocalizedName(
+                        names.fontSubfamily
+                    ),
+
+                uniqueID:
+                    getLocalizedName(
+                        names.uniqueID
+                    ),
+
+                fullName:
+                    getLocalizedName(
+                        names.fullName
+                    ),
+
+                version:
+                    getLocalizedName(
+                        names.version
+                    ),
+
+                postScriptName:
+                    getLocalizedName(
+                        names.postScriptName
+                    ),
+
+                manufacturer:
+                    getLocalizedName(
+                        names.manufacturer
+                    ),
+
+                designer:
+                    getLocalizedName(
+                        names.designer
+                    ),
+
+                copyright:
+                    getLocalizedName(
+                        names.copyright
+                    ),
+
+                license:
+                    getLocalizedName(
+                        names.license
+                    )
+
+            };
+
+
+            /*
+             * Fill form
+             */
+
+            setValue(
+                "fontFamily",
+                originalMetadata.fontFamily
+            );
+
+            setValue(
+                "fontSubfamily",
+                originalMetadata.fontSubfamily ||
+                "Regular"
+            );
+
+            setValue(
+                "uniqueID",
+                originalMetadata.uniqueID
+            );
+
+            setValue(
+                "fullName",
+                originalMetadata.fullName
+            );
+
+            setValue(
+                "version",
+                originalMetadata.version ||
+                "Version 1.00"
+            );
+
+            setValue(
+                "postScriptName",
+                originalMetadata.postScriptName
+            );
+
+            setValue(
+                "manufacturer",
+                originalMetadata.manufacturer
+            );
+
+            setValue(
+                "designer",
+                originalMetadata.designer
+            );
+
+            setValue(
+                "copyright",
+                originalMetadata.copyright
+            );
+
+            setValue(
+                "license",
+                originalMetadata.license
+            );
+
+
+            /*
+             * Show editor
+             */
+
+            editorSection.style.display =
+                "block";
+
+
+            /*
+             * Load preview
+             */
+
+            loadPreview(
+                originalFontBuffer
+            );
+
+
+            showStatus(
+                "Font successfully loaded। এখন Metadata edit করতে পারবেন।",
+                "success"
+            );
+
+        }
+
+        catch(error) {
+
+            console.error(
+                error
+            );
+
+            loadedFont = null;
+
+            originalFontBuffer = null;
+
+            editorSection.style.display =
+                "none";
+
+            showStatus(
+                "এই Font File parse করা সম্ভব হয়নি।",
+                "error"
+            );
+
+        }
+
+    };
+
+
+    reader.onerror = function() {
+
+        showStatus(
+            "Font File read করা সম্ভব হয়নি।",
+            "error"
+        );
+
+    };
+
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+
+/* ============================================================
+   FILE INPUT
+============================================================ */
+
+fontFile.addEventListener(
+    "change",
+    function(event) {
+
+        const file =
+            event.target.files[0];
+
+        processFont(file);
+
+    }
+);
+
+
+/* ============================================================
+   DRAG & DROP
+============================================================ */
+
+dropZone.addEventListener(
+    "click",
+    function() {
+
+        fontFile.click();
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "dragover",
+    function(event) {
+
+        event.preventDefault();
+
+        dropZone.classList.add(
+            "dragover"
+        );
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "dragleave",
+    function() {
+
+        dropZone.classList.remove(
+            "dragover"
+        );
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "drop",
+    function(event) {
+
+        event.preventDefault();
+
+        dropZone.classList.remove(
+            "dragover"
+        );
+
+
+        const file =
+            event.dataTransfer.files[0];
+
+
+        processFont(file);
+
+    }
+);
+
+
+/* ============================================================
+   PREVIEW
+============================================================ */
+
+function loadPreview(arrayBuffer) {
+
+    try {
+
+        const fontFace =
+            new FontFace(
+                "EditorPreviewFont",
                 arrayBuffer
             );
 
 
-            fontFace
-                .load()
-                .then(function (loaded) {
+        fontFace
+            .load()
+            .then(function(font) {
 
-                    document.fonts.add(loaded);
+                document.fonts.add(font);
 
-                    const preview =
-                        getElement(
-                            "fontPreviewText"
-                        );
+                updatePreview();
 
-                    preview.style.fontFamily =
-                        "customFontPreview";
+            })
+            .catch(function(error) {
 
-                    updatePreview();
+                console.warn(
+                    "Preview error:",
+                    error
+                );
 
-                })
-                .catch(function (error) {
+            });
 
-                    console.warn(
-                        "Preview loading failed:",
-                        error
-                    );
+    }
 
-                });
+    catch(error) {
 
-        }
+        console.warn(
+            "Preview failed:",
+            error
+        );
 
-        catch (error) {
+    }
 
-            console.warn(
-                "Font preview error:",
-                error
+}
+
+
+function updatePreview() {
+
+    const preview =
+        document.getElementById(
+            "fontPreviewText"
+        );
+
+    const text =
+        document.getElementById(
+            "previewInput"
+        );
+
+    const size =
+        document.getElementById(
+            "previewSize"
+        );
+
+
+    preview.textContent =
+        text.value;
+
+
+    preview.style.fontSize =
+        size.value + "px";
+
+
+    preview.style.fontFamily =
+        "EditorPreviewFont";
+
+}
+
+
+document.getElementById(
+    "previewInput"
+).addEventListener(
+    "input",
+    updatePreview
+);
+
+
+document.getElementById(
+    "previewSize"
+).addEventListener(
+    "change",
+    updatePreview
+);
+
+
+/* ============================================================
+   BINARY HELPERS
+============================================================ */
+
+function readUInt16(data, offset) {
+
+    return (
+        (data[offset] << 8) |
+        data[offset + 1]
+    ) >>> 0;
+
+}
+
+
+function readUInt32(data, offset) {
+
+    return (
+        data[offset] * 0x1000000 +
+        data[offset + 1] * 0x10000 +
+        data[offset + 2] * 0x100 +
+        data[offset + 3]
+    ) >>> 0;
+
+}
+
+
+function writeUInt16(data, offset, value) {
+
+    data[offset] =
+        (value >> 8) & 0xff;
+
+    data[offset + 1] =
+        value & 0xff;
+
+}
+
+
+function writeUInt32(data, offset, value) {
+
+    data[offset] =
+        (value >>> 24) & 0xff;
+
+    data[offset + 1] =
+        (value >>> 16) & 0xff;
+
+    data[offset + 2] =
+        (value >>> 8) & 0xff;
+
+    data[offset + 3] =
+        value & 0xff;
+
+}
+
+
+/* ============================================================
+   ASCII TAG
+============================================================ */
+
+function tagToString(data, offset) {
+
+    return String.fromCharCode(
+        data[offset],
+        data[offset + 1],
+        data[offset + 2],
+        data[offset + 3]
+    );
+
+}
+
+
+/* ============================================================
+   UTF-16 BE ENCODER
+============================================================ */
+
+function encodeUTF16BE(text) {
+
+    const bytes = [];
+
+
+    for (
+        let i = 0;
+        i < text.length;
+        i++
+    ) {
+
+        const code =
+            text.charCodeAt(i);
+
+
+        /*
+         * Normal BMP character
+         */
+
+        if (code <= 0xffff) {
+
+            bytes.push(
+                (code >> 8) & 0xff,
+                code & 0xff
             );
 
         }
@@ -1138,52 +1287,1068 @@
     }
 
 
-    /* =========================================================
-       UPDATE PREVIEW
-    ========================================================= */
+    return new Uint8Array(bytes);
 
-    function updatePreview() {
+}
 
-        const preview =
-            getElement(
-                "fontPreviewText"
+
+/* ============================================================
+   BUILD NAME TABLE
+============================================================ */
+
+function buildNameTable(metadata) {
+
+    /*
+     * OpenType name IDs:
+     *
+     * 0  Copyright
+     * 1  Family
+     * 2  Subfamily
+     * 3  Unique ID
+     * 4  Full Name
+     * 5  Version
+     * 6  PostScript
+     * 8  Manufacturer
+     * 9  Designer
+     * 13 License
+     */
+
+
+    const records = [
+
+        {
+            id: 0,
+            value: metadata.copyright
+        },
+
+        {
+            id: 1,
+            value: metadata.fontFamily
+        },
+
+        {
+            id: 2,
+            value: metadata.fontSubfamily
+        },
+
+        {
+            id: 3,
+            value: metadata.uniqueID
+        },
+
+        {
+            id: 4,
+            value: metadata.fullName
+        },
+
+        {
+            id: 5,
+            value: metadata.version
+        },
+
+        {
+            id: 6,
+            value: metadata.postScriptName
+        },
+
+        {
+            id: 8,
+            value: metadata.manufacturer
+        },
+
+        {
+            id: 9,
+            value: metadata.designer
+        },
+
+        {
+            id: 13,
+            value: metadata.license
+        }
+
+    ];
+
+
+    /*
+     * Only create records which have a value.
+     */
+
+    const validRecords =
+        records.filter(function(record) {
+
+            return (
+                record.value !== undefined &&
+                record.value !== null &&
+                record.value !== ""
             );
 
-        const input =
-            getElement(
-                "previewInput"
-            );
-
-        const size =
-            getElement(
-                "previewSize"
-            );
+        });
 
 
-        preview.textContent =
-            input.value;
+    /*
+     * We create Windows Unicode records.
+     *
+     * platformID = 3
+     * encodingID = 1
+     * languageID = 0x0409
+     */
+
+    const encodedRecords =
+        validRecords.map(function(record) {
+
+            return {
+
+                platformID: 3,
+
+                encodingID: 1,
+
+                languageID: 0x0409,
+
+                nameID: record.id,
+
+                bytes: encodeUTF16BE(
+                    String(record.value)
+                )
+
+            };
+
+        });
 
 
-        preview.style.fontSize =
-            size.value + "px";
+    const count =
+        encodedRecords.length;
+
+
+    /*
+     * Header = 6 bytes
+     *
+     * Record = 12 bytes
+     */
+
+    const recordBytes =
+        count * 12;
+
+
+    /*
+     * String storage starts after
+     * header + records.
+     */
+
+    let stringOffset =
+        6 + recordBytes;
+
+
+    let stringLength = 0;
+
+
+    for (
+        const record of encodedRecords
+    ) {
+
+        stringLength +=
+            record.bytes.length;
 
     }
 
 
-    /* =========================================================
-       RESET METADATA
-    ========================================================= */
+    const output =
+        new Uint8Array(
+            stringOffset + stringLength
+        );
 
-    function resetMetadata() {
 
-        if (!loadedFont) {
+    /*
+     * Name table header
+     */
+
+    writeUInt16(
+        output,
+        0,
+        0
+    );
+
+    writeUInt16(
+        output,
+        2,
+        count
+    );
+
+    writeUInt16(
+        output,
+        4,
+        stringOffset
+    );
+
+
+    /*
+     * Write records
+     */
+
+    let recordOffset = 6;
+
+    let currentStringOffset = 0;
+
+
+    for (
+        const record of encodedRecords
+    ) {
+
+        writeUInt16(
+            output,
+            recordOffset,
+            record.platformID
+        );
+
+        writeUInt16(
+            output,
+            recordOffset + 2,
+            record.encodingID
+        );
+
+        writeUInt16(
+            output,
+            recordOffset + 4,
+            record.languageID
+        );
+
+        writeUInt16(
+            output,
+            recordOffset + 6,
+            record.nameID
+        );
+
+        writeUInt16(
+            output,
+            recordOffset + 8,
+            record.bytes.length
+        );
+
+        writeUInt16(
+            output,
+            recordOffset + 10,
+            currentStringOffset
+        );
+
+
+        recordOffset += 12;
+
+        currentStringOffset +=
+            record.bytes.length;
+
+    }
+
+
+    /*
+     * Write strings
+     */
+
+    let stringPosition =
+        stringOffset;
+
+
+    for (
+        const record of encodedRecords
+    ) {
+
+        output.set(
+            record.bytes,
+            stringPosition
+        );
+
+        stringPosition +=
+            record.bytes.length;
+
+    }
+
+
+    return output;
+
+}
+
+
+/* ============================================================
+   FIND TABLES
+============================================================ */
+
+function getFontTables(data) {
+
+    const tables = {};
+
+    const numTables =
+        readUInt16(
+            data,
+            4
+        );
+
+
+    const directoryOffset = 12;
+
+
+    for (
+        let i = 0;
+        i < numTables;
+        i++
+    ) {
+
+        const offset =
+            directoryOffset +
+            i * 16;
+
+
+        const tag =
+            tagToString(
+                data,
+                offset
+            );
+
+
+        const checksum =
+            readUInt32(
+                data,
+                offset + 4
+            );
+
+
+        const tableOffset =
+            readUInt32(
+                data,
+                offset + 8
+            );
+
+
+        const tableLength =
+            readUInt32(
+                data,
+                offset + 12
+            );
+
+
+        tables[tag] = {
+
+            index: i,
+
+            directoryOffset:
+                offset,
+
+            checksum:
+
+                checksum,
+
+            offset:
+                tableOffset,
+
+            length:
+                tableLength
+
+        };
+
+    }
+
+
+    return tables;
+
+}
+
+
+/* ============================================================
+   PAD 4
+============================================================ */
+
+function align4(value) {
+
+    return (
+        (value + 3) &
+        ~3
+    );
+
+}
+
+
+/* ============================================================
+   CHECKSUM
+============================================================ */
+
+function calculateChecksum(
+    data,
+    offset,
+    length
+) {
+
+    let sum = 0;
+
+
+    const end =
+        offset +
+        length;
+
+
+    for (
+        let i = offset;
+        i < end;
+        i += 4
+    ) {
+
+        const b0 =
+            data[i] || 0;
+
+        const b1 =
+            data[i + 1] || 0;
+
+        const b2 =
+            data[i + 2] || 0;
+
+        const b3 =
+            data[i + 3] || 0;
+
+
+        const value =
+            (
+                b0 * 0x1000000 +
+                b1 * 0x10000 +
+                b2 * 0x100 +
+                b3
+            ) >>> 0;
+
+
+        sum =
+            (sum + value) >>> 0;
+
+    }
+
+
+    return sum >>> 0;
+
+}
+
+
+/* ============================================================
+   UPDATE NAME TABLE
+============================================================ */
+
+function updateFontBinary(
+    originalBuffer,
+    metadata
+) {
+
+    const original =
+        new Uint8Array(
+            originalBuffer
+        );
+
+
+    /*
+     * Make a copy.
+     */
+
+    const originalLength =
+        original.length;
+
+
+    /*
+     * Read tables.
+     */
+
+    const tables =
+        getFontTables(
+            original
+        );
+
+
+    if (!tables["name"]) {
+
+        throw new Error(
+            "Font does not contain a name table."
+        );
+
+    }
+
+
+    const nameTable =
+        buildNameTable(
+            metadata
+        );
+
+
+    const nameInfo =
+        tables["name"];
+
+
+    /*
+     * Important:
+     *
+     * We DO NOT modify glyph,
+     * cmap, GSUB, GPOS, CFF,
+     * glyf, fvar etc.
+     *
+     * We append the new name table
+     * at the end of the font.
+     */
+
+
+    const newNameOffset =
+        align4(
+            originalLength
+        );
+
+
+    const newNameLength =
+        nameTable.length;
+
+
+    const finalLength =
+        newNameOffset +
+        align4(
+            newNameLength
+        );
+
+
+    const result =
+        new Uint8Array(
+            finalLength
+        );
+
+
+    /*
+     * Copy original font exactly.
+     */
+
+    result.set(
+        original,
+        0
+    );
+
+
+    /*
+     * Padding before new table.
+     */
+
+    for (
+        let i = originalLength;
+        i < newNameOffset;
+        i++
+    ) {
+
+        result[i] = 0;
+
+    }
+
+
+    /*
+     * Write new name table.
+     */
+
+    result.set(
+        nameTable,
+        newNameOffset
+    );
+
+
+    /*
+     * Update name directory entry.
+     */
+
+    const nameDirectoryOffset =
+        nameInfo.directoryOffset;
+
+
+    writeUInt32(
+        result,
+        nameDirectoryOffset + 8,
+        newNameOffset
+    );
+
+
+    writeUInt32(
+        result,
+        nameDirectoryOffset + 12,
+        newNameLength
+    );
+
+
+    /*
+     * Set name checksum later.
+     */
+
+    writeUInt32(
+        result,
+        nameDirectoryOffset + 4,
+        0
+    );
+
+
+    /*
+     * head table is needed for
+     * checkSumAdjustment.
+     */
+
+    const tablesAfter =
+        getFontTables(
+            result
+        );
+
+
+    const headInfo =
+        tablesAfter["head"];
+
+
+    if (!headInfo) {
+
+        throw new Error(
+            "Font does not contain a head table."
+        );
+
+    }
+
+
+    /*
+     * checkSumAdjustment is at
+     * head + 8
+     */
+
+    writeUInt32(
+        result,
+        headInfo.offset + 8,
+        0
+    );
+
+
+    /*
+     * Recalculate all table checksums.
+     */
+
+    const tableCount =
+        readUInt16(
+            result,
+            4
+        );
+
+
+    for (
+        let i = 0;
+        i < tableCount;
+        i++
+    ) {
+
+        const directoryOffset =
+            12 +
+            i * 16;
+
+
+        const tableOffset =
+            readUInt32(
+                result,
+                directoryOffset + 8
+            );
+
+
+        const tableLength =
+            readUInt32(
+                result,
+                directoryOffset + 12
+            );
+
+
+        /*
+         * Checksum field itself must be zero
+         * while calculating.
+         */
+
+        writeUInt32(
+            result,
+            directoryOffset + 4,
+            0
+        );
+
+
+        const checksum =
+            calculateChecksum(
+                result,
+                tableOffset,
+                tableLength
+            );
+
+
+        writeUInt32(
+            result,
+            directoryOffset + 4,
+            checksum
+        );
+
+    }
+
+
+    /*
+     * head checksum must be recalculated
+     * after checkSumAdjustment is zero.
+     */
+
+    const freshTables =
+        getFontTables(
+            result
+        );
+
+
+    const freshHead =
+        freshTables["head"];
+
+
+    writeUInt32(
+        result,
+        freshHead.offset + 8,
+        0
+    );
+
+
+    /*
+     * head table checksum
+     */
+
+    writeUInt32(
+        result,
+        freshHead.directoryOffset + 4,
+        0
+    );
+
+
+    const headChecksum =
+        calculateChecksum(
+            result,
+            freshHead.offset,
+            freshHead.length
+        );
+
+
+    writeUInt32(
+        result,
+        freshHead.directoryOffset + 4,
+        headChecksum
+    );
+
+
+    /*
+     * Calculate complete font checksum.
+     */
+
+    const totalChecksum =
+        calculateChecksum(
+            result,
+            0,
+            result.length
+        );
+
+
+    const checkSumAdjustment =
+        (
+            0xB1B0AFBA -
+            totalChecksum
+        ) >>> 0;
+
+
+    writeUInt32(
+        result,
+        freshHead.offset + 8,
+        checkSumAdjustment
+    );
+
+
+    /*
+     * Recalculate head table checksum
+     * because checkSumAdjustment changed.
+     */
+
+    writeUInt32(
+        result,
+        freshHead.directoryOffset + 4,
+        0
+    );
+
+
+    const finalHeadChecksum =
+        calculateChecksum(
+            result,
+            freshHead.offset,
+            freshHead.length
+        );
+
+
+    writeUInt32(
+        result,
+        freshHead.directoryOffset + 4,
+        finalHeadChecksum
+    );
+
+
+    return result.buffer;
+
+}
+
+
+/* ============================================================
+   GET METADATA FROM FORM
+============================================================ */
+
+function getMetadataFromForm() {
+
+    return {
+
+        fontFamily:
+            getValue("fontFamily"),
+
+        fontSubfamily:
+            getValue("fontSubfamily"),
+
+        uniqueID:
+            getValue("uniqueID"),
+
+        fullName:
+            getValue("fullName"),
+
+        version:
+            getValue("version"),
+
+        postScriptName:
+            getValue("postScriptName"),
+
+        manufacturer:
+            getValue("manufacturer"),
+
+        designer:
+            getValue("designer"),
+
+        copyright:
+            getValue("copyright"),
+
+        license:
+            getValue("license")
+
+    };
+
+}
+
+
+/* ============================================================
+   SAFE FILE NAME
+============================================================ */
+
+function createDownloadName() {
+
+    let name =
+        getValue("fontFamily");
+
+
+    if (!name) {
+        name = "edited-font";
+    }
+
+
+    name =
+        name.replace(
+            /[<>:"/\\|?*\x00-\x1F]/g,
+            ""
+        );
+
+
+    name =
+        name.trim();
+
+
+    if (!name) {
+        name = "edited-font";
+    }
+
+
+    return (
+        "edited_" +
+        name +
+        ".ttf"
+    );
+
+}
+
+
+/* ============================================================
+   DOWNLOAD
+============================================================ */
+
+function saveAndDownload() {
+
+    if (!originalFontBuffer) {
+
+        showStatus(
+            "প্রথমে একটি Font File Select করুন।",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const downloadButton =
+        document.getElementById(
+            "downloadButton"
+        );
+
+
+    try {
+
+        downloadButton.disabled =
+            true;
+
+
+        showStatus(
+            "Font metadata update করা হচ্ছে...",
+            "info"
+        );
+
+
+        const metadata =
+            getMetadataFromForm();
+
+
+        /*
+         * Required field
+         */
+
+        if (!metadata.fontFamily) {
+
+            throw new Error(
+                "Font Family Name খালি রাখা যাবে না।"
+            );
+
+        }
+
+
+        /*
+         * Build modified binary
+         */
+
+        const modifiedBuffer =
+            updateFontBinary(
+                originalFontBuffer,
+                metadata
+            );
+
+
+        /*
+         * IMPORTANT:
+         *
+         * এখানে loadedFont.toArrayBuffer()
+         * একদম ব্যবহার করা হচ্ছে না।
+         */
+
+
+        const blob =
+            new Blob(
+                [modifiedBuffer],
+                {
+                    type:
+                        originalFileName
+                            .toLowerCase()
+                            .endsWith(".otf")
+                            ? "font/otf"
+                            : "font/ttf"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            url;
+
+
+        link.download =
+            createDownloadName();
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        setTimeout(function() {
+
+            document.body.removeChild(
+                link
+            );
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        }, 1000);
+
+
+        showStatus(
+            "✅ Metadata successfully update হয়েছে। Font download শুরু হয়েছে।",
+            "success"
+        );
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Font update error:",
+            error
+        );
+
+
+        showStatus(
+            "❌ Font Metadata update করা যায়নি: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally {
+
+        setTimeout(function() {
+
+            downloadButton.disabled =
+                false;
+
+        }, 1000);
+
+    }
+
+}
+
+
+/* ============================================================
+   RESET
+============================================================ */
+
+document.getElementById(
+    "resetButton"
+).addEventListener(
+    "click",
+    function() {
+
+        if (!originalFontBuffer) {
 
             showStatus(
-                "প্রথমে একটি font file select করুন।",
+                "প্রথমে একটি Font File Select করুন।",
                 "error"
             );
 
             return;
+
         }
 
 
@@ -1194,7 +2359,8 @@
 
         setValue(
             "fontSubfamily",
-            originalMetadata.fontSubfamily || "Regular"
+            originalMetadata.fontSubfamily ||
+            "Regular"
         );
 
         setValue(
@@ -1209,7 +2375,8 @@
 
         setValue(
             "version",
-            originalMetadata.version || "Version 1.00"
+            originalMetadata.version ||
+            "Version 1.00"
         );
 
         setValue(
@@ -1239,350 +2406,19 @@
 
 
         showStatus(
-            "Original metadata restore করা হয়েছে।",
+            "Original Metadata restore করা হয়েছে।",
             "success"
         );
 
     }
+);
 
 
-    /* =========================================================
-       UPDATE FONT METADATA
-    ========================================================= */
+/* ============================================================
+   INITIAL PREVIEW
+============================================================ */
 
-    function updateFontMetadata() {
-
-        loadedFont.names.fontFamily =
-            createNameTableEntry(
-                getValue("fontFamily")
-            );
-
-
-        loadedFont.names.fontSubfamily =
-            createNameTableEntry(
-                getValue("fontSubfamily")
-            );
-
-
-        loadedFont.names.uniqueID =
-            createNameTableEntry(
-                getValue("uniqueID")
-            );
-
-
-        loadedFont.names.fullName =
-            createNameTableEntry(
-                getValue("fullName")
-            );
-
-
-        loadedFont.names.version =
-            createNameTableEntry(
-                getValue("version")
-            );
-
-
-        loadedFont.names.postScriptName =
-            createNameTableEntry(
-                getValue("postScriptName")
-            );
-
-
-        loadedFont.names.manufacturer =
-            createNameTableEntry(
-                getValue("manufacturer")
-            );
-
-
-        loadedFont.names.designer =
-            createNameTableEntry(
-                getValue("designer")
-            );
-
-
-        loadedFont.names.copyright =
-            createNameTableEntry(
-                getValue("copyright")
-            );
-
-
-        loadedFont.names.license =
-            createNameTableEntry(
-                getValue("license")
-            );
-
-    }
-
-
-    /* =========================================================
-       GENERATE DOWNLOAD NAME
-    ========================================================= */
-
-    function getDownloadFileName() {
-
-        let name =
-            getValue("fontFamily");
-
-
-        if (!name) {
-            name = "edited-font";
-        }
-
-
-        /* Remove unsafe filename characters */
-
-        name = name
-            .replace(/[<>:"/\\|?*\x00-\x1F]/g, "")
-            .trim();
-
-
-        if (!name) {
-            name = "edited-font";
-        }
-
-
-        return name + ".ttf";
-
-    }
-
-
-    /* =========================================================
-       SAVE AND DOWNLOAD
-    ========================================================= */
-
-    function saveAndDownload() {
-
-        if (!loadedFont) {
-
-            showStatus(
-                "প্রথমে একটি font file select করুন।",
-                "error"
-            );
-
-            return;
-        }
-
-
-        try {
-
-            /* Validate family name */
-
-            if (!getValue("fontFamily")) {
-
-                showStatus(
-                    "Font Family Name খালি রাখা যাবে না।",
-                    "error"
-                );
-
-                getElement(
-                    "fontFamily"
-                ).focus();
-
-                return;
-            }
-
-
-            /* Update metadata */
-
-            updateFontMetadata();
-
-
-            /* Generate new font binary */
-
-            const arrayBuffer =
-                loadedFont.toArrayBuffer();
-
-
-            if (!arrayBuffer) {
-
-                throw new Error(
-                    "Could not generate font buffer"
-                );
-
-            }
-
-
-            /* Create Blob */
-
-            const blob =
-                new Blob(
-                    [arrayBuffer],
-                    {
-                        type: "font/ttf"
-                    }
-                );
-
-
-            /* Create URL */
-
-            const url =
-                URL.createObjectURL(blob);
-
-
-            /* Create download link */
-
-            const link =
-                document.createElement("a");
-
-
-            link.href = url;
-
-            link.download =
-                getDownloadFileName();
-
-
-            link.style.display = "none";
-
-
-            document.body.appendChild(link);
-
-
-            link.click();
-
-
-            /* Cleanup */
-
-            setTimeout(function () {
-
-                document.body.removeChild(link);
-
-                URL.revokeObjectURL(url);
-
-            }, 100);
-
-
-            showStatus(
-                "Font metadata successfully update হয়েছে এবং download শুরু হয়েছে।",
-                "success"
-            );
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Font save error:",
-                error
-            );
-
-
-            showStatus(
-                "Font file save করতে সমস্যা হয়েছে।",
-                "error"
-            );
-
-        }
-
-    }
-
-
-    /* =========================================================
-       DRAG & DROP
-    ========================================================= */
-
-    const dropZone =
-        getElement("dropZone");
-
-
-    dropZone.addEventListener(
-        "dragover",
-        function (event) {
-
-            event.preventDefault();
-
-            dropZone.classList.add(
-                "dragover"
-            );
-
-        }
-    );
-
-
-    dropZone.addEventListener(
-        "dragleave",
-        function () {
-
-            dropZone.classList.remove(
-                "dragover"
-            );
-
-        }
-    );
-
-
-    dropZone.addEventListener(
-        "drop",
-        function (event) {
-
-            event.preventDefault();
-
-
-            dropZone.classList.remove(
-                "dragover"
-            );
-
-
-            const files =
-                event.dataTransfer.files;
-
-
-            if (!files || !files.length) {
-                return;
-            }
-
-
-            const file =
-                files[0];
-
-
-            const fileName =
-                file.name.toLowerCase();
-
-
-            if (
-                !fileName.endsWith(".ttf") &&
-                !fileName.endsWith(".otf")
-            ) {
-
-                showStatus(
-                    "শুধু TTF অথবা OTF font file ব্যবহার করুন।",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            /* Put dropped file into input */
-
-            const dataTransfer =
-                new DataTransfer();
-
-
-            dataTransfer.items.add(file);
-
-
-            getElement(
-                "fontFile"
-            ).files =
-                dataTransfer.files;
-
-
-            processFont({
-                target: {
-                    files: [file]
-                }
-            });
-
-        }
-    );
-
-
-    /* =========================================================
-       INITIAL PREVIEW
-    ========================================================= */
-
-    updatePreview();
+updatePreview();
 
 </script>
 
