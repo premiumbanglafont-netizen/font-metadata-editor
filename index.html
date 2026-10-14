@@ -343,55 +343,89 @@ button:disabled{
 }
 
 .footer {
-  text-align: center;
-  color: #7a8792;
-  font-size: 13px;
-  padding: 20px 8px;
+
+text-align: center;
+
+color: #7a8792;
+
+font-size: 13px;
+
+padding: 20px 8px;
+
 }
 
 .footer-links {
-  margin-top: 8px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap; /* লিঙ্কগুলোর টেক্সট ভেঙে যাওয়া রোধ করতে এটি যোগ করুন */
-  gap: 6px 12px;     /* ফ্লেক্স আইটেমগুলোর মাঝে দূরত্ব নিয়ন্ত্রণ করতে */
-  align-items: center;
+
+margin-top: 8px;
+
+display: flex;
+
+justify-content: center;
+
+gap: 10px;
+
+align-items: center;
+
 }
 
 /* লিংকগুলোর মাঝে ডট আনার জন্য */
+
 .footer-links a:not(:last-child)::after {
-  content: "·";
-  margin-left: 10px;
-  color: #7a8792;
+
+content: "·";
+
+margin-left: 10px;
+
+color: #7a8792;
+
 }
 
 .footer-links a {
-  color: var(--blue, #1877f2);
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s;
-  white-space: nowrap; /* লিঙ্কগুলোর শব্দ ভেঙে যাওয়া রোধ করবে */
+
+color: var(--blue, #1877f2);
+
+text-decoration: none;
+
+font-weight: 600;
+
+transition: color 0.2s;
+
 }
 
 .footer-links a:hover {
-  color: #0b4da1; /* হোভার করলে কালার একটু গাড় হবে */
-  text-decoration: underline;
+
+color: #0b4da1; /* হোভার করলে কালার একটু গাড় হবে */
+
+text-decoration: underline;
+
 }
 
 .spinner {
-  display: inline-block;
-  width: 17px;
-  height: 17px;
-  border: 2px solid rgba(255, 255, 255, .4);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-  vertical-align: -3px;
-  margin-right: 8px;
+
+display: inline-block;
+
+width: 17px;
+
+height: 17px;
+
+border: 2px solid rgba(255, 255, 255, .4);
+
+border-top-color: #fff;
+
+border-radius: 50%;
+
+animation: spin .7s linear infinite;
+
+vertical-align: -3px;
+
+margin-right: 8px;
+
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+
+to { transform: rotate(360deg); }
+
 }
 
 @media (max-width: 520px) {
@@ -409,7 +443,17 @@ button:disabled{
     white-space: normal;
   }
 }
-    
+
+@media (max-width: 480px) {
+  .footer-links {
+    gap: 8px;
+  }
+  
+  /* মোবাইল স্ক্রিনে লিঙ্কগুলোর মাঝের ডট লুকিয়ে ফেলা */
+  .footer-links a:not(:last-child)::after {
+    display: none;
+  }
+}
 @media(max-width:650px){
     body{
         padding:10px;
