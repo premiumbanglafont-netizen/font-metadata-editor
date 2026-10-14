@@ -30,7 +30,6 @@ body{
 }
 
 /* Top Navigation Bar for Page Links */
-/* Top Navigation Bar for Page Links */
 .nav-bar {
   display: flex;
   justify-content: center;
@@ -392,6 +391,23 @@ button:disabled{
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+@media (max-width: 520px) {
+  .nav-bar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .nav-link {
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    white-space: normal;
+  }
+}
+
 @media(max-width:650px){
     body{
         padding:10px;
@@ -418,7 +434,6 @@ button:disabled{
 </style>
 </head>
 <body>
-<div class="container">
 <div class="app">
          <!-- Custom Page Links -->
   <nav class="nav-bar">
@@ -427,7 +442,10 @@ button:disabled{
     <a href="https://premiumbanglafont-netizen.github.io/Font-Merger/" class="nav-link" target="_blank">Font Merger</a>
      <a href="https://premiumbanglafont-netizen.github.io/Font-Format-Converter/" class="nav-link" target="_blank">Font Format Converter</a>
     <a href="https://premiumbanglafont-netizen.github.io/Glyph-Remover/" class="nav-link" target="_blank">Glyph Remover</a>
- </nav>
+  </nav>
+
+<div class="container">
+
     <h1>ফন্ট ইনফরমেশন পরিবর্তন করুন</h1>
 
     <div class="subtitle">
