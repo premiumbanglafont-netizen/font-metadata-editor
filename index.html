@@ -430,9 +430,9 @@ to { transform: rotate(360deg); }
 
 @media (max-width: 520px) {
   .nav-bar {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    display: inline flow-root;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
     overflow: visible;
   }
 
@@ -445,11 +445,24 @@ to { transform: rotate(360deg); }
 }
 
 @media (max-width: 480px) {
+  /* ফুটারের প্যাডিং কমানোর জন্য */
+  .footer {
+    padding: 10px 4; /* উপরে-নিচে ১০ পিক্সেল এবং ডানে-বামে ৪ পিক্সেল */
+  }
+
   .footer-links {
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: 4px; /* লিঙ্ক গ্রিডের ওপরের মার্জিনও একটু কমিয়ে দেওয়া হলো */
+  }
+
+  /* লিঙ্কগুলোর নিজস্ব প্যাডিং কমাতে চাইলে */
+  .footer-links a {
+    padding: 2px 0; /* উপরে-নিচে হালকা প্যাডিং দিলে ক্লিক করতে সুবিধা হবে */
   }
   
-  /* মোবাইল স্ক্রিনে লিঙ্কগুলোর মাঝের ডট লুকিয়ে ফেলা */
+  /* মোবাইল স্ক্রিনে লিঙ্কগুলোর মাঝের ডট লুকিয়ে ফেলা */
   .footer-links a:not(:last-child)::after {
     display: none;
   }
