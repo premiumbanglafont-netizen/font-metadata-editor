@@ -29,6 +29,37 @@ body{
         sans-serif;
 }
 
+/* Top Navigation Bar for Page Links */
+/* Top Navigation Bar for Page Links */
+.nav-bar {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 12px;
+  padding: 0 10px;
+}
+
+.nav-link {
+  color: var(--blue-dark, #1877f2); /* টেক্সটের কালার */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px; /* লেখার সাইজ */
+  transition: all 0.2s ease-in-out;
+  
+  background: rgba(255, 255, 255, 0.7);
+  padding: 6px 14px; /* বাটনের ভিতরের সাইজ (Padding) */
+  border-radius: 20px; /* পিল /রাউন্ড সাইজ */
+  border: 1px solid #dce4ec;
+  
+  display: inline-block;
+}
+
+/* Hover Effect */
+.nav-link:hover {
+  background: #1877f2; /* ব্যাকগ্রাউন্ড কালার */
+  color: #ffffff;      /* হোভার করার পর টেক্সটের কালার */
+  border-color: #1877f2
+}
 .container{
     width:100%;
     max-width:900px;
@@ -312,13 +343,55 @@ button:disabled{
     text-decoration:underline;
 }
 
-.footer{
-    text-align:center;
-    margin-top:25px;
-    color:#888;
-    font-size:12px;
+.footer {
+  text-align: center;
+  color: #7a8792;
+  font-size: 13px;
+  padding: 20px 8px;
 }
 
+.footer-links {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+
+/* লিংকগুলোর মাঝে ডট আনার জন্য */
+.footer-links a:not(:last-child)::after {
+  content: "·";
+  margin-left: 10px;
+  color: #7a8792;
+}
+
+.footer-links a {
+  color: var(--blue, #1877f2);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #0b4da1; /* হোভার করলে কালার একটু গাড় হবে */
+  text-decoration: underline;
+}
+
+.spinner {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgba(255, 255, 255, .4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  vertical-align: -3px;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 @media(max-width:650px){
     body{
         padding:10px;
@@ -342,12 +415,18 @@ button:disabled{
         flex-direction:column;
     }
 }
-
 </style>
 </head>
-
-
 <body>
+<div class="app">
+         <!-- Custom Page Links -->
+  <nav class="nav-bar">
+    <a href="https://premiumbanglafont-netizen.github.io/Font-Preview/" class="nav-link" target="_blank">Font Preview</a>
+    <a href="https://premiumbanglafont-netizen.github.io/font-metadata-editor/" class="nav-link" target="_blank">Font Metadata Editor</a>
+    <a href="https://premiumbanglafont-netizen.github.io/Font-Merger/" class="nav-link" target="_blank">Font Merger</a>
+     <a href="https://premiumbanglafont-netizen.github.io/Font-Format-Converter/" class="nav-link" target="_blank">Font Format Converter</a>
+    <a href="https://premiumbanglafont-netizen.github.io/Glyph-Remover/" class="nav-link" target="_blank">Glyph Remover</a>
+</div>
 
 <div class="container">
 
@@ -517,8 +596,16 @@ premiumbanglafont.blogspot.com
     </div>
 
     <div class="footer">
-        Font Metadata Editor • আপনার ব্রাউজারে স্থায়ী ভাবে চলে
+        PBFF • Font Metadata Editor • আপনার ব্রাউজারে স্থায়ী ভাবে চলে
+    <div class="footer-links">
+     <a href="https://premiumbanglafont.blogspot.com" target="_blank">Home</a>
+     <a href="https://premiumbanglafont.blogspot.com/p/about.html" target="_blank">About</a>
+     <a href="https://premiumbanglafont.blogspot.com/p/contact-us.html" target="_blank">Contact Us</a>
+     <a href="https://premiumbanglafont.blogspot.com/p/privacy-policy.html" target="_blank">Privacy Policy</a>
+     <a href="https://premiumbanglafont.blogspot.com/p/eula.html" target="_blank">Eula</a>
+     <a href="https://premiumbanglafont.blogspot.com/p/sitemap.html" target="_blank">Sitemap</a>
     </div>
+   
 
 </div>
 
